@@ -1,12 +1,14 @@
 var map = L.map('map', {
     center: [37.992225, -1.130542],
-    zoom: 18
+    zoom: 15
     });
 
 
 //Capas de base
 var osmBase = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap<\/a> contributors'
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap<\/a> contributors',
+    maxZoom: 20,
+    maxNativeZoom: 19
 }).addTo(map);
 
 var pnoa=L.tileLayer.wms("http://www.ign.es/wms-inspire/pnoa-ma?SERVICE=WMS&", {
@@ -14,7 +16,9 @@ var pnoa=L.tileLayer.wms("http://www.ign.es/wms-inspire/pnoa-ma?SERVICE=WMS&", {
            format: 'image/jpeg',
            transparent: true,
            version: '1.3.0',//wms version (ver get capabilities)
-           attribution: "PNOA WMS. Cedido por © Instituto Geográfico Nacional de España"
+           attribution: "PNOA WMS. Cedido por © Instituto Geográfico Nacional de España",
+           maxZoom: 20,
+           maxNativeZoom: 19
         });
 
 var baseMaps = {
