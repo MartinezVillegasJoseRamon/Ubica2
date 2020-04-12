@@ -23,6 +23,19 @@ var baseMaps = {
 };
 L.control.layers(baseMaps).addTo(map);
 
+
+
+//Marcador draggable
+var myMarker = L.marker([37.992225, -1.130542], {title: "Marcador", alt: "The Big I", draggable: true})
+.addTo(map)
+.on('dragend', function() {
+    var coord = String(myMarker.getLatLng()).split(',');
+    var lat = coord[0].split('(');
+    var lng = coord[1].split(')');
+    myMarker.bindPopup("Situado en: " + lat[1] + ", " + lng[0] + ".");
+});
+
+
 //Conocer coordenadas del click o el dblclick
 //Desactivar doble click con zoom
 map.doubleClickZoom.disable();
@@ -36,3 +49,5 @@ var popup = L.popup()
 .setContent('<p><strong>Posición: </strong><br>Latitud:' + latlng.lat + '<br>Longitud: ' + latlng.lng + '</p>')
 .openOn(map);
 });
+
+
