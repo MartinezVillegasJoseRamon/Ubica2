@@ -2,5 +2,9 @@ body{
     background-color: #1488cc;
 }
 #map{
-    height: 70vh;
+    height: 80vh;
+}
+
+.logo{
+    height: 3vw;
 }

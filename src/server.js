@@ -10,6 +10,7 @@ const methodOverride = require('method-override');  //Permite las llamadas HTTP 
 const flash = require('connect-flash');     //Modulo para almacenar mensajes en las sesiones
 const session= require('express-session');  //Modulo de express para manejar sesiones
 const passport = require('passport');       //Modulo para autenticación de usuarios
+const cookieParser = require('cookie-parser');  //Modulo necesario para utilizar express-sessions
 
 
 //---------------- Inicialización
@@ -48,10 +49,13 @@ app.use(morgan('dev'));
 //Modulo override (Sobreescribe los metodos en los formularios)
 app.use(methodOverride('_method'));
 
+//Módulo necesario para sessions
+app.use(cookieParser());
+
 //Módulo para utilizar sessions en servidor
 app.use(session({
     secret: 'secret',
-    resave: true,
+    resave: false,
     saveUninitialized: true
 }));
 
