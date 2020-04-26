@@ -6,4 +6,6 @@ mapaCtrl.renderMapa = (req, res) => {
     res.render('mapas/mapa');
 };
 
+
+
 module.exports = mapaCtrl;

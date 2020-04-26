@@ -11,5 +11,8 @@ const {isAuthenticated} = require('../helpers/auth');
 //Ruta de la pagina inicial y funcion que ejecutará de los controladores
 router.get('/mapas/mapa', isAuthenticated, renderMapa);
 
+
+
+
 //Exportamos el modulo para poder ser utilizado por otros procesos
 module.exports = router;
