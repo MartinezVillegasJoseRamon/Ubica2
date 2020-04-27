@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Notes App",
+            "name": "Mapas",
             "skipFiles": [
                 "<node_internals>/**"
             ],
