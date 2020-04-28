@@ -12,7 +12,7 @@ const {isAuthenticated} = require('../helpers/auth');
 router.get('/mapas/mapa', renderMapa);
 
 // Endpoint que consulta la BBDD
-router.get('/mapas/mapa/all', todosPuntos);
+router.get('/mapas/mapa/datos', todosPuntos);
 
 
 //Exportamos el modulo para poder ser utilizado por otros procesos

@@ -1,4 +1,6 @@
 
+
+
     <div class="container" id="map">
         {{!-- Aqui se carga el contenido del mapa a mostrar --}}
         
@@ -56,13 +58,19 @@ var popup = L.popup()
 
 
 //Añadimos los marcadores recibidos al mapa
-
-fetch('http://localhost:{{port}}/mapas/mapa/all')
+let marcadores=[];
+fetch('http://localhost:{{port}}/mapas/mapa/datos')
 .then (res=>res.json())
 .then (res=>{
     res.forEach(element => {
-    let marcador = L.marker(element.coordenadas, {title: element.titulo}).addTo(map);
+    let marker= L.marker(element.coordenadas, {title: element.titulo}).addTo(map);
+    marcadores.push(marker);
     });
+    var group = new L.featureGroup(marcadores);
+    map.fitBounds(group.getBounds().pad(0.1));
 })
+
+
+
 
 </script>
