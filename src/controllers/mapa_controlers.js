@@ -11,9 +11,7 @@ mapaCtrl.renderMapa = (req, res) => {
         if (err) return console.error(err);
         return puntos;
       });
-
-
-    res.render('mapas/mapa',{port: req.client.localPort});
+    res.render('mapas/mapa');
 };
 
 //Metodo que recupera los datos solicitados de la BBDD

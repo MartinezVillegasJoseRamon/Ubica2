@@ -1,6 +1,6 @@
 
 
-var map = L.map('map', {
+    var map = L.map('map', {
     center: [37.992225, -1.130542],
     zoom: 15
     });
@@ -34,7 +34,6 @@ L.control.layers(baseMaps).addTo(map);
 map.doubleClickZoom.disable();
 map.on('dblclick', e=> {
     let latlng= map.mouseEventToLatLng(e.originalEvent);
-    //console.log(latlng);
 
 //Popup, al hacer doble click muestra las coordenadas
 var popup = L.popup()
@@ -45,18 +44,18 @@ var popup = L.popup()
 
 
 //Añadimos los marcadores recibidos al mapa
+let marcadores=[];  //Array para marcadores utilizado en zoom a marcadores
 
-//console.log(puntos);
-// puntos.forEach(element => {
-//     let marcador = L.marker([element.lat, element.long], {title: element.titulo}).addTo(map);
-// });
-
-// var myMarker = L.marker([37.992225, -1.130542], {title: "Marcador", alt: "The Big I", draggable: true})
-// .addTo(map)
-// .on('dragend', function() {
-//     var coord = String(myMarker.getLatLng()).split(',');
-//     var lat = coord[0].split('(');
-//     var lng = coord[1].split(')');
-//     myMarker.bindPopup("Situado en: " + lat[1] + ", " + lng[0] + ".");
-// });
+//Hacemos fetch a la pagina que devuelve los datos de los puntos y creamos los marcadores
+fetch('http://localhost:4000/mapas/mapa/datos')
+.then (res=>res.json())
+.then (res=>{
+    res.forEach(element => {
+    let marker= L.marker(element.coordenadas, {title: element.titulo}).addTo(map);
+    marcadores.push(marker);
+    });
+    //Hacemos zoom a los marcadores creados con un margen de +1%
+    var group = new L.featureGroup(marcadores);
+    map.fitBounds(group.getBounds().pad(0.1));
+})
 
