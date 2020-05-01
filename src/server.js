@@ -37,7 +37,7 @@ app.engine('.hbs', exphbs({
 //Especificamos el motor de plantillas que vamos a utilizar
 app.set('view engine', '.hbs');
 
-//---------------- Middlewares (funciones que se ejecutan cuando llegan las peticiones
+//---------------- Middlewares (funciones que se ejecutan cuando llegan las peticiones)
 
 //Los datos recibidos se codifican como JSON
 app.use(express.urlencoded({extended: false}));
@@ -66,7 +66,6 @@ app.use(passport.session());
 //Middleware de flash (envio de mensajes emergentes)
 app.use(flash());
 
-
 //---------------- Variables globales
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
@@ -75,7 +74,6 @@ app.use((req, res, next) => {
     res.locals.user = req.user || null; 
     next();
 });
-
 
 //---------------- Rutas
 
