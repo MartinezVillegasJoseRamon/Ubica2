@@ -14,7 +14,7 @@ mapaCtrl.renderMapa = (req, res) => {
     res.render('mapas/mapa');
 };
 
-//Metodo que recupera los datos solicitados de la BBDD
+//Metodo que recupera todos los marcadores de la BBDD
 mapaCtrl.todosPuntos = (req, res) => {
 
     let puntos = Punto.find(function(err, puntos) {

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 //Creamos la cadena de conexión como un string que toma los datos del archivo .env
-const {NOTES_APP_MONGODB_HOST, NOTES_APP_MONGODB_DATABASE} = process.env;
-const MONGODB_URI = `mongodb://${NOTES_APP_MONGODB_HOST}/${NOTES_APP_MONGODB_DATABASE}`;
+const {MAP_MONGODB_HOST, MAP_MONGODB_DATABASE} = process.env;
+const MONGODB_URI = `mongodb://${MAP_MONGODB_HOST}/${MAP_MONGODB_DATABASE}`;
 
 mongoose.connect(MONGODB_URI, {
     useUnifiedTopology: true,

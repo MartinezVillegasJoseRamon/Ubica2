@@ -42,6 +42,24 @@ var popup = L.popup()
 .openOn(map);
 });
 
+//Localización actual
+// map.locate({
+//     enableHighAccuracy: true
+// });
+// map.on('locationfound', onLocationFound);
+// function onLocationFound(posicion){
+//     //console.log(posicion.latlng.lng);
+//     let marker= L.marker([posicion.latlng.lat, posicion.latlng.lng]).bindPopup('Mi posicion').addTo(map);
+// }
+
+navigator.geolocation.getCurrentPosition(function(position) {
+    let Lat =  position.coords.latitude;
+    let Long = position.coords.longitude;
+    //Iconos personalizados Font Awesome
+    let marker= L.marker([Lat, Long], {icon: L.AwesomeMarkers.icon({icon: 'camera', prefix: 'fa', markerColor: 'darkred', spin:false}) }).bindPopup('Mi posicion').addTo(map);
+});
+
+
 
 //Añadimos los marcadores recibidos al mapa
 let marcadores=[];  //Array para marcadores utilizado en zoom a marcadores
@@ -50,18 +68,47 @@ let marcadores=[];  //Array para marcadores utilizado en zoom a marcadores
 fetch('http://localhost:4000/mapas/mapa/datos')
 .then (res=>res.json())
 .then (res=>{
+
     //Recorremos el array de puntos y vamos insertando cada marcador con su popup
     res.forEach(element => {
-    // let comentariosTXT = element.comentarios.join();
+    //Variable para almacenar comentarios
     let comentariosTXT = "";
     for(let i=0;i<element.comentarios.length;i++){
-        comentariosTXT += [i] + ": " + element.comentarios[i] + ", "
+        comentariosTXT += i+1 + ": " + element.comentarios[i] + ", "
     }
     
-    let marker= L.marker(element.coordenadas, {title: element.titulo})
-    .bindPopup('<h4>Localización</h4>' + "<br>" + 
-                'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + 
-                'Autor: ' + element.autor + "<br>" + 
+    //Icono del marcador en funcion del tipo de fotografía
+    let icono="";
+    let color="";
+    let prefijo="";
+    switch(element.tipo_fotografia){
+        case 'ciudad':
+            icono='building';
+            color='purple';
+            prefijo='fa';
+        break;
+        case 'macro':
+            icono='eye';
+            color='orange';
+            prefijo='fa';
+        break;
+        case 'paisaje':
+            icono='image';
+            color='green';
+            prefijo='fa';
+        break;
+
+        default:
+            icono='house-damage';
+            color='red';
+            prefijo='fa';
+        break;
+    }
+
+    let marker= L.marker(element.coordenadas, {icon: L.AwesomeMarkers.icon({icon: icono, prefix: prefijo, markerColor: color, spin:false, iconColor: 'white'}) })
+    .bindPopup('<strong>Ubicación</strong>' + "<br>" + 
+                'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" + 
+                '<strong>Autor: </strong>' + element.autor + "<br>" + 
                 'Título: ' + element.titulo + "<br>" + 
                 'Tipo fotografía: ' + element.tipo_fotografia + "<br>" + 
                 'Dirección: ' + element.direccion + "<br>" + 
@@ -70,9 +117,7 @@ fetch('http://localhost:4000/mapas/mapa/datos')
                 'Imagen: ' + element.foto  + "<br>"
     )
     .addTo(map);
-    console.log(element.comentarios);
-    
-
+    //Añadimos el marcador actual al array
     marcadores.push(marker);
     });
     //Hacemos zoom a los marcadores creados con un margen de +1%

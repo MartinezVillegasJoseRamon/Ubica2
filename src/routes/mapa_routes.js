@@ -11,7 +11,7 @@ const {isAuthenticated} = require('../helpers/auth');
 //Ruta de la pagina inicial y funcion que ejecutará de los controladores
 router.get('/mapas/mapa', renderMapa);
 
-// Endpoint que consulta la BBDD
+// Endpoint que consulta todos los marcadores de la BBDD
 router.get('/mapas/mapa/datos', todosPuntos);
 
 
