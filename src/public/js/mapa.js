@@ -50,8 +50,29 @@ let marcadores=[];  //Array para marcadores utilizado en zoom a marcadores
 fetch('http://localhost:4000/mapas/mapa/datos')
 .then (res=>res.json())
 .then (res=>{
+    //Recorremos el array de puntos y vamos insertando cada marcador con su popup
     res.forEach(element => {
-    let marker= L.marker(element.coordenadas, {title: element.titulo}).addTo(map);
+    // let comentariosTXT = element.comentarios.join();
+    let comentariosTXT = "";
+    for(let i=0;i<element.comentarios.length;i++){
+        comentariosTXT += [i] + ": " + element.comentarios[i] + ", "
+    }
+    
+    let marker= L.marker(element.coordenadas, {title: element.titulo})
+    .bindPopup('<h4>Localización</h4>' + "<br>" + 
+                'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + 
+                'Autor: ' + element.autor + "<br>" + 
+                'Título: ' + element.titulo + "<br>" + 
+                'Tipo fotografía: ' + element.tipo_fotografia + "<br>" + 
+                'Dirección: ' + element.direccion + "<br>" + 
+                'Comentarios: ' + comentariosTXT + "<br>" + 
+                'Visitas: ' + element.visitas + "<br>" + 
+                'Imagen: ' + element.foto  + "<br>"
+    )
+    .addTo(map);
+    console.log(element.comentarios);
+    
+
     marcadores.push(marker);
     });
     //Hacemos zoom a los marcadores creados con un margen de +1%
