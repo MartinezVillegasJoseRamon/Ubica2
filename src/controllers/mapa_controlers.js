@@ -2,6 +2,7 @@
 //Creamos un objeto controlador
 const mapaCtrl = {};
 const Punto = require('../models/Punto');
+const passport = require('passport');
 
 let usuarioActual="";
 
@@ -23,16 +24,23 @@ mapaCtrl.todosPuntos = (req, res) => {
     let puntos = Punto.find(function(err, puntos) {
         if (err) return console.error(err);
         return res.json(puntos);
-      });    
+      });
 };
 
 //Filtrado por parametros en marcadores de la BBDD
-mapaCtrl.puntosAutor = (req, res) => {
+mapaCtrl.misUbicaciones = (req, res) => {
  
   let puntos = Punto.find({autor: usuarioActual},function(err, puntos) {
       if (err) return console.error(err);
+      //console.log(req.query.user);
+      
       return res.json(puntos);
     });    
 };
+
+
+
+
+
 
 module.exports = mapaCtrl;
