@@ -31,17 +31,29 @@ var baseMaps = {
 L.control.layers(baseMaps).addTo(map);
 
 
-//Conocer coordenadas del click o el dblclick
+//Añadimos un mensaje con instrucciones 
+let centro = map.getCenter();
+let lat=centro.lat;
+let lng=centro.lng;
+var popup = L.popup(/* {autoClose:false} */)
+      .setLatLng([lat, lng])
+      .setContent('Doble click para insertar una nueva ubicación. Puedes arrastrar el marcador para un ajuste fino'); 
+    map.addLayer(popup);
+
+
+
+
+
+//Añadir marcador con doble click
 //Desactivar doble click con zoom
 map.doubleClickZoom.disable();
 map.on('dblclick', e => {
     let latlng = map.mouseEventToLatLng(e.originalEvent);
-
-    //Popup, al hacer doble click muestra las coordenadas
-    var popup = L.popup()
-        .setLatLng(latlng)
-        .setContent('<p><strong>Posición: </strong><br>Latitud:' + latlng.lat + '<br>Longitud: ' + latlng.lng + '</p>')
-        .openOn(map);
+    let nuevo = L.marker(latlng, {
+        draggable:true,
+        opacity: 1
+        }).bindPopup("<b>Nuevo</b>")
+        .addTo(map);
 });
 
 //Mi Localización actual
@@ -130,31 +142,5 @@ function cargaDatos(url) {
 
 }
 
-cargaDatos('http://localhost:4000/mapas/mapa/datos');
-
-//Evento para boton Mis ubicaciones
-document.getElementById("mis_ubicaciones").onclick = function () {
-    eliminaMarcadores();
-    cargaDatos('http://localhost:4000/mapas/mapa/datos/autor?user=true');
-
-};
-
-//Evento para boton todas las ubicaciones
-document.getElementById("ver_todas").onclick = function () {
-    eliminaMarcadores();
-    cargaDatos('http://localhost:4000/mapas/mapa/datos');
-
-};
-
-//Evento para boton mi ubicación
-document.getElementById("ver_miUbicacion").onclick = function () {
-    map.flyTo([miPosicion.latitude, miPosicion.longitude], 16);
-
-};
-
-//Evento para boton mi ubicación
-document.getElementById("new").onclick = function () {
-    location.href = 'http://localhost:4000/mapas/mapa/nuevo';
-};
-
+cargaDatos('http://localhost:4000/mapas/mapa/datos/autor');
 

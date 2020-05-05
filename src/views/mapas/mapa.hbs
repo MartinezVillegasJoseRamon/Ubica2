@@ -1,18 +1,42 @@
-
-<div class="row p-1" >
+<div class="row p-1">
     <div class="container-fluid col-md-10" id="map">
         {{!-- Aqui se carga el contenido del mapa a mostrar --}}
     </div>
 
-    <div class="containerm col-md-2" id="selectores">
-        {{!-- Aqui se cargan los filtros --}}
-        <button type="button" id="mis_ubicaciones" class="btn btn-light btn-block">Mis Ubicaciones</button>
+    <div class="containerm col-lg-2" id="selectores">
+        <button type="button" id="ver_todas" class="btn btn-light btn-block">Vista inicial</button>
+        <button type="button" id="mis_ubicaciones" class="btn btn-light btn-block">Ver mis Ubicaciones</button>
+        <button type="button" id="ver_miUbicacion" class="btn btn-light btn-block">Ver mi ubicación</button>
 
+
+        {{!-- Aqui se cargan los filtros --}}
+
+        <div class="card mt-3">
+            <div class="card-header">
+                Selectores
+            </div>
+            <div class="card-body">
+                <select id="tipo_foto" class="custom-select mb-2">
+                    <option selected>Tipo de foto</option>
+                    <option value="paisaje">Paisaje</option>
+                    <option value="macro">Macro</option>
+                    <option value="nocturna">Nocturna</option>
+                    <option value="LP">Light Painting</option>
+                    <option value="ruinas">Ruinas</option>
+                    <option value="ciudad">Ciudad</option>
+                    <option value="todas">Todas</option>
+                </select>
+
+            <button type="button" id="new" class="btn btn-success btn-block">Nueva ubicación</button>
+            <button type="button" id="edit" class="btn btn-warning btn-block">Editar existente</button>
+            <button type="button" id="delete" class="btn btn-danger btn-block">Eliminar ubicación</button>
+
+
+            </div>
+        </div>
     </div>
 
 </div>
 
-    {{!-- Cargamos el archivo que está en la ruta global public y la ruta indicada --}}
-    <script src="/js/mapa.js"></script>
-
-
+{{!-- Cargamos el archivo que está en la ruta global public y la ruta indicada --}}
+<script src="/js/mapa.js"></script>

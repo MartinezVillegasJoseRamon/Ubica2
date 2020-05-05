@@ -32,10 +32,18 @@ mapaCtrl.misUbicaciones = (req, res) => {
  
   let puntos = Punto.find({autor: usuarioActual},function(err, puntos) {
       if (err) return console.error(err);
-      //console.log(req.query.user);
+      //console.log(req.query.user); //Revisar parametros pasados por GET
       
       return res.json(puntos);
     });    
+};
+
+//Nueva ubicación BBDD
+mapaCtrl.renderNuevo = (req, res) => {
+  console.log('Nuevo');
+  
+  res.render('mapas/nuevo');
+   
 };
 
 
