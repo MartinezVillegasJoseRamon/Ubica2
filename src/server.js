@@ -11,6 +11,7 @@ const flash = require('connect-flash');     //Modulo para almacenar mensajes en 
 const session= require('express-session');  //Modulo de express para manejar sesiones
 const passport = require('passport');       //Modulo para autenticación de usuarios
 const cookieParser = require('cookie-parser');  //Modulo necesario para utilizar express-sessions
+const fileUpload = require('express-fileupload');   //Modulo para subida de archivos de imagen
 
 
 //---------------- Inicialización
@@ -41,6 +42,9 @@ app.set('view engine', '.hbs');
 
 //Los datos recibidos se codifican como JSON
 app.use(express.urlencoded({extended: false}));
+
+//Indicamos el uso de fileUpload de express
+app.use(fileUpload());
 
 //Cargamos el modulo dev de morgan
 //El modulo nos muestra la peticiones recibidas en la consola, muy util para verificar errores durante el desarrollo
@@ -85,7 +89,7 @@ app.use(require('./routes/mapa_routes'));
 //---------------- Ficheros estaticos
 
 //Indicación de la ruta de la carpeta public
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.static('public'));
 
 module.exports = app;

@@ -152,9 +152,10 @@ document.getElementById("ver_miUbicacion").onclick = function () {
 
 };
 
-//Evento para boton mi ubicación
+//Evento para boton nueva ubicación
 document.getElementById("new").onclick = function () {
     location.href = 'http://localhost:4000/mapas/mapa/nuevo';
 };
+
 
 

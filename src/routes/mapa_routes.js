@@ -3,7 +3,7 @@ const {Router} = require('express');
 const router = Router();
 
 //Requerimos las funciones que van a realizar la distintas rutas
-const {renderMapa, todosPuntos, misUbicaciones, renderNuevo} = require('../controllers/mapa_controlers');
+const {renderMapa, todosPuntos, misUbicaciones, renderNuevo, upload} = require('../controllers/mapa_controlers');
 
 //Requerimos la funcion creada para verificar si hay un usuario autenticado
 const {isAuthenticated} = require('../helpers/auth');
@@ -19,6 +19,9 @@ router.get('/mapas/mapa/datos/autor', misUbicaciones);
 
 // Endpoint añadir nuevo punto a BBDD
 router.get('/mapas/mapa/nuevo', renderNuevo);
+
+// Endpoint subir imagen a BBDD
+router.post('/mapas/upload', upload);
 
 //Exportamos el modulo para poder ser utilizado por otros procesos
 module.exports = router;

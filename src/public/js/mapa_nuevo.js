@@ -1,7 +1,10 @@
 
+
 //Inicialización del mapa
 var map = L.map('map', { center: [37.992225, -1.130542], zoom: 15 });
 var miPosicion;
+var nuevoCoords;  //Nuevo punto añadido al mapa
+var autorNuevaUbicacion;
 
 
 //Capas de base
@@ -41,19 +44,18 @@ var popup = L.popup(/* {autoClose:false} */)
     map.addLayer(popup);
 
 
-
-
-
 //Añadir marcador con doble click
 //Desactivar doble click con zoom
 map.doubleClickZoom.disable();
 map.on('dblclick', e => {
     let latlng = map.mouseEventToLatLng(e.originalEvent);
-    let nuevo = L.marker(latlng, {
+    let nuevaUbicacion = L.marker(latlng, {
         draggable:true,
         opacity: 1
         }).bindPopup("<b>Nuevo</b>")
         .addTo(map);
+    nuevoCoords = latlng;
+    anadirCoordenadas(nuevoCoords);
 });
 
 //Mi Localización actual
@@ -82,13 +84,57 @@ function zoomMarcadores(){
 var group = new L.featureGroup(arrayMarkers);
 map.fitBounds(group.getBounds().pad(0.1));}
 
+//Insertamos la latitud y longitud del nuevo punto insertado
+function anadirCoordenadas(coord){
+    document.getElementById("inputLat").value = coord.lat;
+    document.getElementById("inputLng").value = coord.lng;
+};
 
+//Insertamos el autor del nuevo punto insertado
+function anadirAutor(autor){
+    document.getElementById("inputAutor").value = autor;
+};
+
+//Evento para boton Subir Imagen
+document.getElementById("botSubir").onclick = function () {
+    let source= new FormData();
+    source.append('imagen', document.getElementById("inputSubirImagen").files[0]);  //Obtenemos el nombre del archivo seleccionado
+    
+
+    let h = new Headers();
+    h.append('Accept', 'application/json');
+    let ruta = 'http://localhost:4000/mapas/upload';
+
+    let req = new Request(ruta, {
+        method: 'POST',
+        headers: h,
+        mode: 'no-cors',
+        body: source
+    });
+
+    //Hacemos fetch a la pagina que carga la imagen seleccionada
+    fetch(req)
+        .then(res => res.json())
+        .then(res => {
+            document.getElementById("labelInputSubirImagen").innerText=source.name;  //Actualizamos la etiqueta con el nombre de archivo
+            document.getElementById("imagenThumbnail").src="img/archivoTemporal.jpg";
+        })
+        .catch( (error) => {
+            console.log(error);
+            
+        });
+    }
+
+
+//Metodo para cargar los datos del usuario actual
 function cargaDatos(url) {
     //Hacemos fetch a la pagina que devuelve los datos de los puntos y creamos los marcadores
     fetch(url)
         .then(res => res.json())
         .then(res => {
-
+            autorNuevaUbicacion=res[0].autor;
+            anadirAutor(autorNuevaUbicacion);//Añadimos el autor en el input del formulario
+            
             //Recorremos el array de puntos y vamos insertando cada marcador con su popup
             res.forEach(element => {
                 //Variable para almacenar comentarios
@@ -139,8 +185,6 @@ function cargaDatos(url) {
             arrayMarkers=[];
 
         });
-
 }
-
 cargaDatos('http://localhost:4000/mapas/mapa/datos/autor');
 
