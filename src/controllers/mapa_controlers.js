@@ -64,7 +64,7 @@ let rutaAbsoluta= ruta + nombreArchivo;
     // podemos redirigir a la vista que queramos con 'res.redirect('xxxx'), por ejemplo, 
     // 'return res.redirect('/mapas/mapa/nuevo'). Esta acción también redibuja la vista.
     // Más info: https://www.sitepoint.com/forms-file-uploads-security-node-express/
-    return res.render('mapas/nuevo');
+    return res.json({ res: 'ok' });
   });
 
 

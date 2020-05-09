@@ -98,7 +98,7 @@ function anadirAutor(autor){
 // Actualiza el elemento 'img' de la vista con la imagen seleccionada una vez que el 
 // usuario ha seleccionado una, sin necesidad de pulsar ningún botón. Así se mejora la
 // experiencia de usuario.
-document.getElementById('inputSubirImagen').onchange = function (evt) {
+function imageSelected(evt) {
     var tgt = evt.target || window.event.srcElement,
         files = tgt.files;
 
@@ -115,6 +115,25 @@ document.getElementById('inputSubirImagen').onchange = function (evt) {
         }
         fr.readAsDataURL(files[0]);
     }
+}
+
+function uploadClickEvt(evt) {
+    const form = document.getElementById('upload-img-form');
+    const formData = new FormData(form);
+    uploadImage(formData);
+}
+
+function uploadImage(image) {
+    const url = 'http://localhost:4000/mapas/upload';
+    fetch(url, {
+        method: 'POST',
+        body: image
+    })
+    .then(res => res.json())
+    .then(res => {
+        console.log(res);
+        alert('Imagen subida con éxito!!');
+    });
 }
 
 //Metodo para cargar los datos del usuario actual
@@ -179,5 +198,12 @@ function cargaDatos(url) {
             }
         });
 }
+
+function addEventListeners() {
+    document.getElementById('botSubir').onclick = uploadClickEvt;
+    document.getElementById('inputSubirImagen').onchange = imageSelected;
+}
+
+addEventListeners();
 cargaDatos('http://localhost:4000/mapas/mapa/datos/autor');
 
