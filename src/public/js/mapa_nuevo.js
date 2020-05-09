@@ -128,6 +128,7 @@ function imageSelected(evt) {
         fr.readAsDataURL(files[0]);
     }
 
+
 }
 
 function uploadClickEvt(evt) {
