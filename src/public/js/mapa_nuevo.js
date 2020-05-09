@@ -95,11 +95,27 @@ function anadirAutor(autor){
     document.getElementById("inputAutor").value = autor;
 };
 
-//Evento para boton Subir Imagen
-document.getElementById("botSubir").onclick = function () {
-    document.getElementById("imagenThumbnail").src="/img/tmp.jpg";
-}
+// Actualiza el elemento 'img' de la vista con la imagen seleccionada una vez que el 
+// usuario ha seleccionado una, sin necesidad de pulsar ningún botón. Así se mejora la
+// experiencia de usuario.
+document.getElementById('inputSubirImagen').onchange = function (evt) {
+    var tgt = evt.target || window.event.srcElement,
+        files = tgt.files;
 
+    // FileReader support
+    if (FileReader && files && files.length) {
+        var fr = new FileReader();
+        fr.onload = function () {
+            // Actualiza la imagen y hace que se vea en la web la preselección
+            document.getElementById('imagenThumbnail').src = fr.result;
+            if (tgt.files && tgt.files.length) {
+                // Actualiza el label del input para mostrar el nombre de la imagen seleccionada
+                document.getElementById('labelInputSubirImagen').innerHTML = tgt.files[0].name;
+            }
+        }
+        fr.readAsDataURL(files[0]);
+    }
+}
 
 //Metodo para cargar los datos del usuario actual
 function cargaDatos(url) {
@@ -107,58 +123,60 @@ function cargaDatos(url) {
     fetch(url)
         .then(res => res.json())
         .then(res => {
-            autorNuevaUbicacion=res[0].autor;
-            anadirAutor(autorNuevaUbicacion);//Añadimos el autor en el input del formulario
-            
-            //Recorremos el array de puntos y vamos insertando cada marcador con su popup
-            res.forEach(element => {
-                //Variable para almacenar comentarios
-                let comentariosTXT = "";
-                for (let i = 0; i < element.comentarios.length; i++) {
-                    comentariosTXT += i + 1 + ": " + element.comentarios[i] + ", "
-                }
-
-                //Iconos personalizados del marcador en funcion del tipo de fotografía
-                let icono = "";
-                let color = "";
-                let prefijo = "";
-                switch (element.tipo_fotografia) {
-                    case 'ciudad':
-                        icono = 'building';
-                        color = 'purple';
-                        break;
-                    case 'macro':
-                        icono = 'eye';
-                        color = 'orange';
-                        break;
-                    case 'paisaje':
-                        icono = 'image';
-                        color = 'green';
-                        break;
-
-                    default:
-                        icono = 'house-damage';
-                        color = 'red';
-                        break;
-                }
-                //Dibujamos los marcadores
-                let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: 'white' }) })
-                    .bindPopup('<strong>Ubicación</strong>' + "<br>" +
-                        'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
-                        '<strong>Autor: </strong>' + element.autor + "<br>" +
-                        'Título: ' + element.titulo + "<br>" +
-                        'Tipo fotografía: ' + element.tipo_fotografia + "<br>" +
-                        'Dirección: ' + element.direccion + "<br>" +
-                        'Comentarios: ' + comentariosTXT + "<br>" +
-                        'Visitas: ' + element.visitas + "<br>" +
-                        'Imagen: ' + element.foto + "<br>"
-                    ).addTo(marcadores);
-                arrayMarkers.push(marker);
-            });
-            map.addLayer(marcadores);
-            zoomMarcadores();
-            arrayMarkers=[];
-
+            // Comprobamos si tenemos datos que mostrar
+            if (res && res.length) {
+                autorNuevaUbicacion=res[0].autor;
+                anadirAutor(autorNuevaUbicacion);//Añadimos el autor en el input del formulario
+                
+                //Recorremos el array de puntos y vamos insertando cada marcador con su popup
+                res.forEach(element => {
+                    //Variable para almacenar comentarios
+                    let comentariosTXT = "";
+                    for (let i = 0; i < element.comentarios.length; i++) {
+                        comentariosTXT += i + 1 + ": " + element.comentarios[i] + ", "
+                    }
+    
+                    //Iconos personalizados del marcador en funcion del tipo de fotografía
+                    let icono = "";
+                    let color = "";
+                    let prefijo = "";
+                    switch (element.tipo_fotografia) {
+                        case 'ciudad':
+                            icono = 'building';
+                            color = 'purple';
+                            break;
+                        case 'macro':
+                            icono = 'eye';
+                            color = 'orange';
+                            break;
+                        case 'paisaje':
+                            icono = 'image';
+                            color = 'green';
+                            break;
+    
+                        default:
+                            icono = 'house-damage';
+                            color = 'red';
+                            break;
+                    }
+                    //Dibujamos los marcadores
+                    let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: 'white' }) })
+                        .bindPopup('<strong>Ubicación</strong>' + "<br>" +
+                            'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
+                            '<strong>Autor: </strong>' + element.autor + "<br>" +
+                            'Título: ' + element.titulo + "<br>" +
+                            'Tipo fotografía: ' + element.tipo_fotografia + "<br>" +
+                            'Dirección: ' + element.direccion + "<br>" +
+                            'Comentarios: ' + comentariosTXT + "<br>" +
+                            'Visitas: ' + element.visitas + "<br>" +
+                            'Imagen: ' + element.foto + "<br>"
+                        ).addTo(marcadores);
+                    arrayMarkers.push(marker);
+                });
+                map.addLayer(marcadores);
+                zoomMarcadores();
+                arrayMarkers=[];
+            }
         });
 }
 cargaDatos('http://localhost:4000/mapas/mapa/datos/autor');
