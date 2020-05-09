@@ -57,14 +57,15 @@ let rutaAbsoluta= ruta + nombreArchivo;
 
   return archivoSubido.mv(rutaAbsoluta, function(err) {
     if (err) {
-      return res.status(500).send(err);
+      return res.sendStatus(500).send(err);
     }
     // Renderizamos de nuevo la vista. Podríamos pasar información a ésta
     // si en el segundo parámetro añadimos un objeto para "rellenar la vista". También
     // podemos redirigir a la vista que queramos con 'res.redirect('xxxx'), por ejemplo, 
     // 'return res.redirect('/mapas/mapa/nuevo'). Esta acción también redibuja la vista.
     // Más info: https://www.sitepoint.com/forms-file-uploads-security-node-express/
-    return res.render('mapas/nuevo');
+    //return res.render('mapas/nuevo');
+    return res.sendStatus(200);
   });
 
 

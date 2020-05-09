@@ -13,19 +13,21 @@
             {{!-- Cargamos la imagen --}}
 
             <div class="card-body text-center">
-                <img class="img w-50" id="imagenThumbnail" src="/img/noimg.jpg" alt="Imagen subida">
+                <img class="img-fluid" style="width:90%" id="imagenThumbnail" src="/img/noimg.jpg" alt="Imagen subida">
             </div>
 
-            <form method="POST" action="/mapas/upload" enctype="multipart/form-data">
-                <div class="custom-file">
+            {{!-- <form method="POST" action="/mapas/upload" enctype="multipart/form-data"> --}}
+            <div class="card-footer">
+                <div class="custom-file ">
                     <input type="file" class="custom-file-input" id="inputSubirImagen" accept=".jpeg, .jpg"
                         name="imagen">
                     <label class="custom-file-label" for="inputSubirImagen" id="labelInputSubirImagen">Elegir archivo</label>
                 </div>
-                <div class="card-footer text-center">
+            </div>
+                {{!-- <div class="card-footer text-center">
                     <button type="submit" class="btn btn-success" id="botSubir">Subir imagen
-                </div>
-            </form>
+                </div> --}}
+            {{!-- </form> --}}
         </div>
 
     {{!-- CARACTERISTICAS --}}
