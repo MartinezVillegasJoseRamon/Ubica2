@@ -52,13 +52,13 @@ mapaCtrl.upload = (req, res) =>{
  }
 let archivoSubido = req.files.imagen; //Recuperamos el archivo enviado en el body
 let ruta = 'src/public/img/';
-let nombreArchivo = 'archivoTemporal.jpg';
+let nombreArchivo = 'tmp.jpg';
 let rutaAbsoluta= ruta + nombreArchivo;
 
   archivoSubido.mv(rutaAbsoluta, function(err) {
     if (err)
       return res.status(500).send(err);
-    return {resultado: true};
+    return res.status(200);
   });
 
 

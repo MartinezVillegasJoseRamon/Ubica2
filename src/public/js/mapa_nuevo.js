@@ -97,33 +97,8 @@ function anadirAutor(autor){
 
 //Evento para boton Subir Imagen
 document.getElementById("botSubir").onclick = function () {
-    let source= new FormData();
-    source.append('imagen', document.getElementById("inputSubirImagen").files[0]);  //Obtenemos el nombre del archivo seleccionado
-    
-
-    let h = new Headers();
-    h.append('Accept', 'application/json');
-    let ruta = 'http://localhost:4000/mapas/upload';
-
-    let req = new Request(ruta, {
-        method: 'POST',
-        headers: h,
-        mode: 'no-cors',
-        body: source
-    });
-
-    //Hacemos fetch a la pagina que carga la imagen seleccionada
-    fetch(req)
-        .then(res => res.json())
-        .then(res => {
-            document.getElementById("labelInputSubirImagen").innerText=source.name;  //Actualizamos la etiqueta con el nombre de archivo
-            document.getElementById("imagenThumbnail").src="img/archivoTemporal.jpg";
-        })
-        .catch( (error) => {
-            console.log(error);
-            
-        });
-    }
+    document.getElementById("imagenThumbnail").src="/img/tmp.jpg";
+}
 
 
 //Metodo para cargar los datos del usuario actual
