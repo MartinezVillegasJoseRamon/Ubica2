@@ -57,7 +57,7 @@ let rutaAbsoluta= ruta + nombreArchivo;
 
   return archivoSubido.mv(rutaAbsoluta, function(err) {
     if (err) {
-      return res.status(500).send(err);
+      return res.sendStatus(500).send(err);
     }
     // Renderizamos de nuevo la vista. Podríamos pasar información a ésta
     // si en el segundo parámetro añadimos un objeto para "rellenar la vista". También

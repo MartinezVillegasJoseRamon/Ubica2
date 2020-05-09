@@ -3,9 +3,8 @@
 //Inicialización del mapa
 var map = L.map('map', { center: [37.992225, -1.130542], zoom: 15 });
 var miPosicion;
-var nuevoCoords;  //Nuevo punto añadido al mapa
 var autorNuevaUbicacion;
-
+var markers = new L.LayerGroup().addTo(map);
 
 //Capas de base
 //Cartografia
@@ -47,15 +46,28 @@ var popup = L.popup(/* {autoClose:false} */)
 //Añadir marcador con doble click
 //Desactivar doble click con zoom
 map.doubleClickZoom.disable();
-map.on('dblclick', e => {
+map.on('dblclick', e => {  
+    markers.clearLayers();
+    let position;
     let latlng = map.mouseEventToLatLng(e.originalEvent);
     let nuevaUbicacion = L.marker(latlng, {
         draggable:true,
+        autoPan: true,
         opacity: 1
-        }).bindPopup("<b>Nuevo</b>")
-        .addTo(map);
-    nuevoCoords = latlng;
-    anadirCoordenadas(nuevoCoords);
+        }).bindPopup("<b>Nuevo</b>");
+    position = nuevaUbicacion.getLatLng();
+
+        nuevaUbicacion.on('dragend', function(event){
+            let marker = event.target;
+            position = marker.getLatLng();
+            anadirCoordenadas(position);
+            marker.setLatLng(position,{id:'temporal',draggable:'true'}).bindPopup(position).update();
+        });
+    nuevaUbicacion.addTo(markers);
+
+    //map.addLayer(nuevaUbicacion);  
+    anadirCoordenadas(position);
+    
 });
 
 //Mi Localización actual
@@ -102,10 +114,10 @@ function imageSelected(evt) {
     var tgt = evt.target || window.event.srcElement,
         files = tgt.files;
 
-    // FileReader support
+    // FileReader
     if (FileReader && files && files.length) {
         var fr = new FileReader();
-        fr.onload = function () {
+        fr.onload = function () {   //Evento que se activa cuando la lectura es correcta
             // Actualiza la imagen y hace que se vea en la web la preselección
             document.getElementById('imagenThumbnail').src = fr.result;
             if (tgt.files && tgt.files.length) {
@@ -115,6 +127,7 @@ function imageSelected(evt) {
         }
         fr.readAsDataURL(files[0]);
     }
+
 }
 
 function uploadClickEvt(evt) {
