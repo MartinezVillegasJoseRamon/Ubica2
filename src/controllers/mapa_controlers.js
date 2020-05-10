@@ -47,6 +47,11 @@ mapaCtrl.renderNuevo = (req, res) => {
 // //Subir imagen
 mapaCtrl.upload = (req, res) =>{
 
+  //Tratamos los datos recibidos
+
+
+
+  
  if(!req.files || Object.keys(req.files).length === 0){
    return res.status(400).send('No existe imagen para subir')
  }

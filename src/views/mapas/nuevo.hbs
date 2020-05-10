@@ -1,52 +1,46 @@
-<div class="row mt-3">
+<form method="POST" action="/mapas/upload" enctype="multipart/form-data">
+    <div class="row mt-3">
 
-    {{!-- MAPA --}}
-    <div class="card col-md-5 mr-auto">
-        {{!-- Cargamos el mapa --}}
-        <div class="card" id="map">
-        </div>
-
-    </div>
-
-    {{!-- IMAGEN --}}
-        <div class="card col-md-4 mr-auto">
-            {{!-- Cargamos la imagen --}}
-
-            <div class="card-body text-center">
-                <img class="img-fluid" style="width:90%" id="imagenThumbnail" src="/img/noimg.jpg" alt="Imagen subida">
+        {{!-- MAPA --}}
+        <div class="card col-lg-5 mr-auto">
+            {{!-- Cargamos el mapa --}}
+            <div class="card" id="map">
             </div>
 
-            {{!-- <form method="POST" action="/mapas/upload" enctype="multipart/form-data"> --}}
+        </div>
+
+        {{!-- IMAGEN --}}
+        <div class="card col-lg-4 mr-auto">
+            {{!-- Cargamos la imagen --}}
+            <div class="card-body text-center">
+                <img class="img-fluid" id="imagenThumbnail" src="/img/noimg.jpg" alt="Imagen subida">
+            </div>
             <div class="card-footer">
                 <div class="custom-file ">
-                    <input type="file" class="custom-file-input" id="inputSubirImagen" accept=".jpeg, .jpg"
-                        name="imagen">
-                    <label class="custom-file-label" for="inputSubirImagen" id="labelInputSubirImagen">Elegir archivo</label>
+                    <input type="file" class="custom-file-input" id="inputSubirImagen" accept=".jpeg, .jpg" name="imagen">
+                    <label class="custom-file-label" for="inputSubirImagen" id="labelInputSubirImagen">Elegir
+                        archivo</label>
                 </div>
             </div>
-                {{!-- <div class="card-footer text-center">
-                    <button type="submit" class="btn btn-success" id="botSubir">Subir imagen
-                </div> --}}
-            {{!-- </form> --}}
+
         </div>
 
-    {{!-- CARACTERISTICAS --}}
-    <div class="card col-md-3 mr-auto">
+        {{!-- CARACTERISTICAS --}}
+        <div class="card col-lg-3 mr-auto">
 
-        <div class="card-body text-center">
-            {{!-- Cargamos los filtros --}}
-            <form>
+            <div class="card-body text-center">
+                {{!-- Cargamos los filtros --}}
                 <div class="form-group">
                     <label for="formGroupInput1">Latitud</label>
-                    <input type="text" class="form-control text-center" id="inputLat" placeholder="Latitud" disabled>
+                    <input type="text" class="form-control text-center" id="inputLat" placeholder="Latitud" name="latitud" readonly>
                     <label for="formGroupInput2">Longitud</label>
-                    <input type="text" class="form-control text-center" id="inputLng" placeholder="Longitud" disabled>
+                    <input type="text" class="form-control text-center" id="inputLng" placeholder="Longitud"name="longitud" readonly>
                     <label for="formGroupInput3">Autor</label>
-                    <input type="text" class="form-control text-center" id="inputAutor" placeholder="Autor" disabled>
+                    <input type="text" class="form-control text-center" id="inputAutor" placeholder="Autor" name="autor" readonly>
 
                     <label for="tipo_foto_nueva">Tipo de foto</label>
-                    <select id="tipo_foto_nueva" class="custom-select mb-2">
-                        <option selected>Tipo de foto</option>
+                    <select id="tipo_foto_nueva" class="custom-select mb-2" name="tipoFoto" required>
+                        <option></option>
                         <option value="paisaje">Paisaje</option>
                         <option value="macro">Macro</option>
                         <option value="nocturna">Nocturna</option>
@@ -57,17 +51,18 @@
                         <option value="todas">Todas</option>
                     </select>
                     <label for="inputDireccion">Dirección</label>
-                    <input type="text" class="form-control text-center" id="inputDireccion" placeholder="Dirección">
+                    <input type="text" class="form-control text-center" id="inputDireccion" placeholder="Dirección" name="direccion">
                     <label for="inputAcceso">Acceso</label>
-                    <textarea class="form-control text-left" id="inputAcceso" rows="5" placeholder="Acceso"></textarea>
+                    <textarea class="form-control text-left" id="inputAcceso" rows="5" placeholder="Acceso" name="acceso" required></textarea>
                 </div>
-            </form>
-        </div>
-        <div class="card-footer text-center">
-            <button class="btn btn-success align-self-end">Insertar nueva ubicación
-        </div>
-    </div>
-</div>
 
+            </div>
+            <div class="card-footer text-center">
+                <button type="submit" class="btn btn-success align-self-end">Insertar nueva ubicación
+            </div>
+        </div>
+
+    </div>
+</form>
 
 <script src="/js/mapa_nuevo.js"></script>
