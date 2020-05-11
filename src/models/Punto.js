@@ -10,7 +10,6 @@ const PuntoSchema = new Schema({
     autor: {type:String},
     direccion: {type:String},
     acceso: {type:String},
-    foto: {type:String},
     fecha_foto: {type:Date},
     visitas: {type:Number},
     comentarios: {type:[String]},

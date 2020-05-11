@@ -13,6 +13,7 @@ const passport = require('passport');       //Modulo para autenticación de usua
 const cookieParser = require('cookie-parser');  //Modulo necesario para utilizar express-sessions
 const fileUpload = require('express-fileupload');   //Modulo para subida de archivos de imagen
 
+const bodyParser = require("body-parser");
 
 //---------------- Inicialización
 const app = express();
@@ -41,7 +42,11 @@ app.set('view engine', '.hbs');
 //---------------- Middlewares (funciones que se ejecutan cuando llegan las peticiones)
 
 //Los datos recibidos se codifican como JSON
-app.use(express.urlencoded({extended: false}));
+// app.use(express.urlencoded({extended: false}));
+// app.use(express.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
 
 //Indicamos el uso de fileUpload de express
 app.use(fileUpload());

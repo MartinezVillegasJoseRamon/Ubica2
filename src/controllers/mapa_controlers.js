@@ -2,41 +2,55 @@
 //Creamos un objeto controlador
 const mapaCtrl = {};
 const Punto = require('../models/Punto');
-const passport = require('passport');
 const Jimp = require('jimp');   //Paquete para edicion de imagenes, resize, B/W, etc
 
 
-let usuarioActual="";
+
+let usuarioActual = "";
 
 //Funcion para renderizar el mapa
 mapaCtrl.renderMapa = (req, res) => {
-    usuarioActual= req.user.name;
-    let puntos = Punto.find(function(err, puntos) {
-        if (err) return console.error(err);
-        return puntos;
-      });
-    
-    res.render('mapas/mapa');
+  usuarioActual = req.user.name;
+  let puntos = Punto.find(function (err, puntos) {
+    if (err) return console.error(err);
+    return puntos;
+  });
+
+  res.render('mapas/mapa');
 };
 
 //Metodo que recupera todos los marcadores de la BBDD
 mapaCtrl.todosPuntos = (req, res) => {
-   
-    let puntos = Punto.find(function(err, puntos) {
-        if (err) return console.error(err);
-        return res.json(puntos);
-      });
+  let tipo = req.query.tipo;
+  //Si hemos recibido un tipo, filtramos los puntos con ese tipo
+  if(tipo && tipo!=='todas'){
+    let puntos = Punto.find({tipo_fotografia: tipo},function (err, puntos) {
+      if (err){
+        return console.error(err);
+      } 
+      return res.json(puntos);
+    });
+  }else{
+    //Si no hay seleccionado un tipo, buscamos todos los puntos
+    let puntos = Punto.find(function (err, puntos) {
+      if (err) {
+        return console.error(err);
+      }
+      return res.json(puntos);
+    });
+  }
+
 };
 
 //Filtrado por parametros en marcadores de la BBDD
 mapaCtrl.misUbicaciones = (req, res) => {
- 
-  let puntos = Punto.find({autor: usuarioActual},function(err, puntos) {
-      if (err) return console.error(err);
-      //console.log(req.query.user); //Revisar parametros pasados por GET
-      
-      return res.json(puntos);
-    });    
+
+  let puntos = Punto.find({ autor: usuarioActual }, function (err, puntos) {
+    if (err) return console.error(err);
+    //console.log(req.query.user); //Revisar parametros pasados por GET
+
+    return res.json(puntos);
+  });
 };
 
 //Nueva ubicación BBDD
@@ -45,37 +59,63 @@ mapaCtrl.renderNuevo = (req, res) => {
 };
 
 // //Subir imagen
-mapaCtrl.upload = (req, res) =>{
+mapaCtrl.upload = async (req, res) => {
+console.log(req.body);
 
-  //Tratamos los datos recibidos
+  //Tratamos los datos recibidos------------------------------------------------
+try{
+  const{
+    autor,
+    tipo_fotografia,
+    titulo,
+    coordenadas: [latitud,longitud],
+    direccion,
+    fecha_foto
+  }=req.body;
 
-
-
-  
- if(!req.files || Object.keys(req.files).length === 0){
-   return res.status(400).send('No existe imagen para subir')
- }
-let archivoSubido = req.files.imagen; //Recuperamos el archivo enviado en el body
-let ruta = 'src/public/img/';
-let nombreArchivo = 'tmp.jpg';
-let rutaAbsoluta= ruta + nombreArchivo;
-
-  return archivoSubido.mv(rutaAbsoluta, function(err) {
-    if (err) {
-      return res.sendStatus(500).send(err);
-    }
-    // Renderizamos de nuevo la vista. Podríamos pasar información a ésta
-    // si en el segundo parámetro añadimos un objeto para "rellenar la vista". También
-    // podemos redirigir a la vista que queramos con 'res.redirect('xxxx'), por ejemplo, 
-    // 'return res.redirect('/mapas/mapa/nuevo'). Esta acción también redibuja la vista.
-    // Más info: https://www.sitepoint.com/forms-file-uploads-security-node-express/
-    //return res.render('mapas/nuevo');
-    return res.sendStatus(200);
+  const nuevaUbicacion= Punto({
+    autor,
+    tipo_fotografia,
+    titulo,
+    coordenadas: [latitud,longitud],
+    direccion,
+    fecha_foto
   });
+  const puntoGuardado = await nuevaUbicacion.save();
+  res.status(200).send({success: true});
+}catch(error){
+  res.status(500).send({message: error.message});
+}
 
 
 
+  // if (!req.files || Object.keys(req.files).length === 0) {
+  //   return res.status(400).send('No existe imagen para subir')
+  // }
+  // let archivoSubido = req.files.imagen; //Recuperamos el archivo enviado en el body
+  // let ruta = 'src/public/img/';
+  // let nombreArchivo = 'tmp.jpg';
+  // let rutaAbsoluta = ruta + nombreArchivo;
 
+  // return archivoSubido.mv(rutaAbsoluta, function (err) {
+  //   if (err) {
+  //     return res.sendStatus(500).send(err);
+  //   }
+  //   // Renderizamos de nuevo la vista. Podríamos pasar información a ésta
+  //   // si en el segundo parámetro añadimos un objeto para "rellenar la vista". También
+  //   // podemos redirigir a la vista que queramos con 'res.redirect('xxxx'), por ejemplo, 
+  //   // 'return res.redirect('/mapas/mapa/nuevo'). Esta acción también redibuja la vista.
+  //   // Más info: https://www.sitepoint.com/forms-file-uploads-security-node-express/
+  //   //return res.render('mapas/nuevo');
+  //   return res.sendStatus(200);
+  // });
+
+
+
+};
+
+
+module.exports = mapaCtrl;
 
   //EDICION CON JIMP-------------------
 
@@ -90,8 +130,3 @@ let rutaAbsoluta= ruta + nombreArchivo;
   // .catch(err => {
   //   console.error(err);
   // });
-
-};
-
-
-module.exports = mapaCtrl;

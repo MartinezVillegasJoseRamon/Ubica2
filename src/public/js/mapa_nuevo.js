@@ -166,9 +166,25 @@ function cargaDatos(url) {
                             icono = 'image';
                             color = 'green';
                             break;
+                        case 'nocturna':
+                            icono = 'moon';
+                            color = 'grey';
+                            break;
+                        case 'LP':
+                            icono = 'bolt';
+                            color = 'white';
+                            break;
+                        case 'ruinas':
+                            icono = 'house-damage';
+                            color = 'blue';
+                            break;
+                        case 'costa':
+                            icono = 'water';
+                            color = 'blue';
+                            break;
     
                         default:
-                            icono = 'house-damage';
+                            icono = 'frown';
                             color = 'red';
                             break;
                     }
@@ -192,5 +208,6 @@ function cargaDatos(url) {
             }
         });
 }
-cargaDatos('http://localhost:4000/mapas/mapa/datos/autor');
+
+cargaDatos('/mapas/mapa/datos/autor');
 
