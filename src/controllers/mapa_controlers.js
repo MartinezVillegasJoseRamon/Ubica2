@@ -60,7 +60,7 @@ mapaCtrl.renderNuevo = (req, res) => {
 
 // //Subir imagen
 mapaCtrl.upload = async (req, res) => {
-console.log(req.body);
+
 
   //Tratamos los datos recibidos------------------------------------------------
 try{
@@ -68,21 +68,24 @@ try{
     autor,
     tipo_fotografia,
     titulo,
-    coordenadas: [latitud,longitud],
     direccion,
-    fecha_foto
+    fecha_foto,
+    latitud,
+    longitud
   }=req.body;
 
   const nuevaUbicacion= Punto({
     autor,
     tipo_fotografia,
     titulo,
-    coordenadas: [latitud,longitud],
     direccion,
-    fecha_foto
+    fecha_foto,
+    coordenadas: [latitud,longitud],
+    visitas: 0
   });
   const puntoGuardado = await nuevaUbicacion.save();
-  res.status(200).send({success: true});
+  //res.status(200).send({success: true});
+  res.render('mapas/mapa');
 }catch(error){
   res.status(500).send({message: error.message});
 }

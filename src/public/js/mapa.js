@@ -85,31 +85,55 @@ function cargaDatos(url) {
                     comentariosTXT += i + 1 + ": " + element.comentarios[i] + ", "
                 }
 
-                //Iconos personalizados del marcador en funcion del tipo de fotografía
-                let icono = "";
-                let color = "";
-                let prefijo = "";
-                switch (element.tipo_fotografia) {
-                    case 'ciudad':
-                        icono = 'building';
-                        color = 'purple';
-                        break;
-                    case 'macro':
-                        icono = 'eye';
-                        color = 'orange';
-                        break;
-                    case 'paisaje':
-                        icono = 'image';
-                        color = 'green';
-                        break;
-
-                    default:
-                        icono = 'house-damage';
-                        color = 'red';
-                        break;
+                 //Iconos personalizados del marcador en funcion del tipo de fotografía
+                 let icono = "";
+                 let color = "";
+                 let iconcolor = "";
+                 switch (element.tipo_fotografia) {
+                     case 'ciudad':
+                         icono = 'building';
+                         color = 'purple';
+                         iconcolor = 'white';
+                         break;
+                     case 'macro':
+                         icono = 'eye';
+                         color = 'orange';
+                         iconcolor = 'white';
+                         break;
+                     case 'paisaje':
+                         icono = 'image';
+                         color = 'green';
+                         iconcolor = 'white';
+                         break;
+                     case 'nocturna':
+                         icono = 'spinner';
+                         color = 'black';
+                         iconcolor = 'white';
+                         break;
+                     case 'LP':
+                         icono = 'star';
+                         color = 'gray';
+                         iconcolor = 'white';
+                         break;
+                     case 'ruinas':
+                         icono = 'registered';
+                         color = 'brown';
+                         iconcolor = 'white';
+                         break;
+                     case 'costa':
+                         icono = 'flag';
+                         color = 'darkblue';
+                         iconcolor = 'white';
+                         break;
+ 
+                     default:
+                         icono = 'image';
+                         color = 'red';
+                         iconcolor = 'grey';
+                         break;
                 }
                 //Dibujamos los marcadores
-                let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: 'white' }) })
+                let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: iconcolor }) })
                     .bindPopup('<strong>Ubicación</strong>' + "<br>" +
                         'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
                         '<strong>Autor: </strong>' + element.autor + "<br>" +
@@ -127,14 +151,6 @@ function cargaDatos(url) {
             arrayMarkers=[];
 
         })
-        .catch(function (error){
-            swal({
-                title: 'No hay ubicaciones',
-                icon: 'warning',
-                text: 'No existen ubicaciones para mostrar del tipo seleccionado'});
-
-        });
-
 }
 
 cargaDatos('/mapas/mapa/datos');
