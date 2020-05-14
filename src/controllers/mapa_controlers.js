@@ -41,7 +41,8 @@ mapaCtrl.misUbicaciones = (req, res) => {
 
   let puntos = Punto.find({ autor: usuarioActual }, function (err, puntos) {
     if (err) return err;
-    return {puntos: res.json(puntos), usuarioActual: usuarioActual};
+   
+    return res.json({puntos, usuarioActual});
   });
 };
 

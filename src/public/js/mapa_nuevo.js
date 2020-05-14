@@ -162,23 +162,20 @@ document.getElementById('inputSubirImagen').onchange = function (evt) {
 function cargaDatos(url) {
     //Hacemos fetch a la pagina que devuelve los datos de los puntos y creamos los marcadores
     fetch(url)
-        //.then(res => res.json())
-        .then(res => res)
+        .then(res => res.json())
         .then(res => {            
-            console.log(res.usuarioActual);
-            
+                        
             // Comprobamos si tenemos datos que mostrar
-            if (res && res.length) {
+            if (res) {
                 autorNuevaUbicacion = res.usuarioActual;
                 anadirAutor(autorNuevaUbicacion);//Añadimos el autor en el input del formulario
                 //Recorremos el array de puntos y vamos insertando cada marcador con su popup
-                res.forEach(element => {
+                arrayMarkers= res.puntos.map(element => {
                     //Variable para almacenar comentarios
                     let comentariosTXT = "";
                     for (let i = 0; i < element.comentarios.length; i++) {
                         comentariosTXT += i + 1 + ": " + element.comentarios[i] + ", "
                     }
-
                     //Iconos personalizados del marcador en funcion del tipo de fotografía
                     let icono = "";
                     let color = "";
@@ -238,11 +235,15 @@ function cargaDatos(url) {
                             'Visitas: ' + element.visitas + "<br>" +
                             'Imagen: ' + element.foto + "<br>"
                         ).addTo(marcadores);
-                    arrayMarkers.push(marker);
+                    //arrayMarkers.push(marker);
+                    return marker;
                 });
-                map.addLayer(marcadores);
-                zoomMarcadores();
-                arrayMarkers = [];
+                if(arrayMarkers.length){
+                    map.addLayer(marcadores);
+                    zoomMarcadores();
+                    arrayMarkers = [];
+                }
+
             }
             else {
                 //Hacemos zoom a la localización del usuario
