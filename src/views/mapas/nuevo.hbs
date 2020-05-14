@@ -13,20 +13,22 @@
         <div class="card col-lg-4 mr-auto">
             {{!-- Cargamos la imagen --}}
             <div class="card-body text-center">
-                <div class="form-group">
-                    <img class="img-fluid" id="imagenThumbnail" src="/img/noimg.jpg" alt="Imagen subida">
-                    <input type="text" class="form-control text-center mt-2" id="inputTitulo"
-                        placeholder="Titulo de foto" name="titulo">
-                    <input type="text" class="form-control text-center mt-2" id="inputFechaFoto"
-                        placeholder="Fecha de la foto" name="fecha_foto">
+                <img class="img-fluid" id="imagenThumbnail" src="/img/noimg.jpg" alt="Imagen subida">
+                <div class="form-group mt-5">
+
+
                 </div>
             </div>
             <div class="card-footer">
+                <label for="inputTitulo" id="labelInputTitulo">Titulo de la imagen</label>
+                <input type="text" class="form-control text-center m-2" id="inputTitulo" placeholder="Titulo" name="titulo" required>
+                <label for="inputFechaFoto" id="labelinputFechaFoto">Fecha de la foto</label>
+                <input type="date" class="form-control text-center m-2" id="inputFechaFoto" name="fecha_foto">
+
                 <div class="custom-file ">
-                    <input type="file" class="custom-file-input" id="inputSubirImagen" accept=".jpeg, .jpg"
+                    <input type="file" class="custom-file-input mt-2" id="inputSubirImagen" accept=".jpeg, .jpg"
                         name="imagen">
-                    <label class="custom-file-label" for="inputSubirImagen" id="labelInputSubirImagen">Elegir
-                        archivo</label>
+                    <label class="custom-file-label mt-2" for="inputSubirImagen" id="labelInputSubirImagen">Elegir archivo</label>
                 </div>
             </div>
 

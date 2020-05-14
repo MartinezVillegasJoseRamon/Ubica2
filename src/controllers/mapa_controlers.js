@@ -4,8 +4,6 @@ const mapaCtrl = {};
 const Punto = require('../models/Punto');
 const Jimp = require('jimp');   //Paquete para edicion de imagenes, resize, B/W, etc
 
-
-
 let usuarioActual = "";
 
 //Funcion para renderizar el mapa
@@ -25,17 +23,13 @@ mapaCtrl.todosPuntos = (req, res) => {
   //Si hemos recibido un tipo, filtramos los puntos con ese tipo
   if(tipo && tipo!=='todas'){
     let puntos = Punto.find({tipo_fotografia: tipo},function (err, puntos) {
-      if (err){
-        return console.error(err);
-      } 
+      if (err) return console.error(err);
       return res.json(puntos);
     });
   }else{
     //Si no hay seleccionado un tipo, buscamos todos los puntos
     let puntos = Punto.find(function (err, puntos) {
-      if (err) {
-        return console.error(err);
-      }
+      if (err) return console.error(err);
       return res.json(puntos);
     });
   }
@@ -46,10 +40,8 @@ mapaCtrl.todosPuntos = (req, res) => {
 mapaCtrl.misUbicaciones = (req, res) => {
 
   let puntos = Punto.find({ autor: usuarioActual }, function (err, puntos) {
-    if (err) return console.error(err);
-    //console.log(req.query.user); //Revisar parametros pasados por GET
-
-    return res.json(puntos);
+    if (err) return err;
+    return {puntos: res.json(puntos), usuarioActual: usuarioActual};
   });
 };
 

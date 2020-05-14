@@ -32,78 +32,107 @@ var baseMaps = {
 //Añadimos las capas base al mapa
 L.control.layers(baseMaps).addTo(map);
 
+//Mi Localización actual
+function miLocalizacion() {
+    let lat, long;
+    navigator.geolocation.getCurrentPosition(function (position) {
+        lat = position.coords.latitude;
+        long = position.coords.longitude;
+        miPosicion = position.coords;
+
+        //Icono personalizado Font Awesome para Mi Localización
+        let marker = L.marker([lat, long], { icon: L.AwesomeMarkers.icon({ icon: 'camera', prefix: 'fa', markerColor: 'darkred', iconColor: 'white', spin: false }) }).bindPopup('Mi localización').addTo(map);
+    });
+};
+//Llamamos a la funcion para que almacene mi posición
+miLocalizacion();
+
 
 //Añadimos un mensaje con instrucciones 
-let centro = map.getCenter();
-let lat=centro.lat;
-let lng=centro.lng;
-var popup = L.popup(/* {autoClose:false} */)
-      .setLatLng([lat, lng])
-      .setContent('Doble click para insertar una nueva ubicación. Puedes arrastrar el marcador para un ajuste fino'); 
-    map.addLayer(popup);
+//Si hemos permitido la geolocalización se situa en miPosicion, si no va al centro del mapa
+function instrucciones() {
+    let centro, lat, lng;
+    if (miPosicion) {
+        lat = miPosicion.latitude;
+        lng = miPosicion.longitude;
+    } else {
+        centro = map.getCenter();
+        lat = centro.lat;
+        lng = centro.lng;
+    }
 
+    var popup = L.popup(/* {autoClose:false} */)
+        .setLatLng([lat, lng])
+        .setContent('Doble click para insertar una nueva ubicación. Puedes arrastrar el marcador para un ajuste fino');
+    map.addLayer(popup);
+}
 
 //Añadir marcador con doble click
 //Desactivar doble click con zoom
 map.doubleClickZoom.disable();
-map.on('dblclick', e => {  
+map.on('dblclick', e => {
     markers.clearLayers();
     let position;
     let latlng = map.mouseEventToLatLng(e.originalEvent);
     let nuevaUbicacion = L.marker(latlng, {
-        draggable:true,
+        draggable: true,
         autoPan: true,
         opacity: 1
-        }).bindPopup("<b>Nuevo</b>");
+    }).bindPopup("<b>Nuevo</b>");
     position = nuevaUbicacion.getLatLng();
 
-        nuevaUbicacion.on('dragend', function(event){
-            let marker = event.target;
-            position = marker.getLatLng();
-            anadirCoordenadas(position);
-            marker.setLatLng(position,{id:'temporal',draggable:'true'}).bindPopup(position).update();
-        });
+    nuevaUbicacion.on('dragend', function (event) {
+        let marker = event.target;
+        position = marker.getLatLng();
+        anadirCoordenadas(position);
+        marker.setLatLng(position, { id: 'temporal', draggable: 'true' }).bindPopup(position).update();
+    });
     nuevaUbicacion.addTo(markers);
 
     //map.addLayer(nuevaUbicacion);  
     anadirCoordenadas(position);
-    
+
 });
 
 //Mi Localización actual
-navigator.geolocation.getCurrentPosition(function (position) {
-    let Lat = position.coords.latitude;
-    let Long = position.coords.longitude;
-    miPosicion=position.coords;
-    
-    //Icono personalizado Font Awesome para Mi Localización
-    let marker = L.marker([Lat, Long], {icon: L.AwesomeMarkers.icon({ icon: 'camera', prefix: 'fa', markerColor: 'darkred', iconColor: 'white', spin: false }) }).bindPopup('Mi localización').addTo(map);
-});
+function miLocalizacion() {
+    let lat, long;
+    navigator.geolocation.getCurrentPosition(function (position) {
+        lat = position.coords.latitude;
+        long = position.coords.longitude;
+        miPosicion = position.coords;
 
+        //Icono personalizado Font Awesome para Mi Localización
+        let marker = L.marker([lat, long], { icon: L.AwesomeMarkers.icon({ icon: 'camera', prefix: 'fa', markerColor: 'darkred', iconColor: 'white', spin: false }) }).bindPopup('Mi localización').addTo(map);
+    });
+};
+//Llamamos a la funcion para que almacene mi posición
+miLocalizacion();
 
 //Añadimos los marcadores recibidos al mapa
-let marcadores=L.layerGroup();  //Capa marcadores
-let arrayMarkers=[];    //Array para marcadores (zoom)
+let marcadores = L.layerGroup();  //Capa marcadores
+let arrayMarkers = [];    //Array para marcadores (zoom)
 
 //Elimina los marcadores
-function eliminaMarcadores(){
+function eliminaMarcadores() {
     map.removeLayer(marcadores);
     marcadores.clearLayers();
 };
 
 //Hacemos zoom a los marcadores creados con un margen de +1%
-function zoomMarcadores(){
-var group = new L.featureGroup(arrayMarkers);
-map.fitBounds(group.getBounds().pad(0.1));}
+function zoomMarcadores() {
+    var group = new L.featureGroup(arrayMarkers);
+    map.fitBounds(group.getBounds().pad(0.1));
+}
 
 //Insertamos la latitud y longitud del nuevo punto insertado
-function anadirCoordenadas(coord){
+function anadirCoordenadas(coord) {
     document.getElementById("inputLat").value = coord.lat;
     document.getElementById("inputLng").value = coord.lng;
 };
 
 //Insertamos el autor del nuevo punto insertado
-function anadirAutor(autor){
+function anadirAutor(autor) {
     document.getElementById("inputAutor").value = autor;
 };
 
@@ -133,13 +162,15 @@ document.getElementById('inputSubirImagen').onchange = function (evt) {
 function cargaDatos(url) {
     //Hacemos fetch a la pagina que devuelve los datos de los puntos y creamos los marcadores
     fetch(url)
-        .then(res => res.json())
-        .then(res => {
+        //.then(res => res.json())
+        .then(res => res)
+        .then(res => {            
+            console.log(res.usuarioActual);
+            
             // Comprobamos si tenemos datos que mostrar
             if (res && res.length) {
-                autorNuevaUbicacion=res[0].autor;
+                autorNuevaUbicacion = res.usuarioActual;
                 anadirAutor(autorNuevaUbicacion);//Añadimos el autor en el input del formulario
-                
                 //Recorremos el array de puntos y vamos insertando cada marcador con su popup
                 res.forEach(element => {
                     //Variable para almacenar comentarios
@@ -147,48 +178,48 @@ function cargaDatos(url) {
                     for (let i = 0; i < element.comentarios.length; i++) {
                         comentariosTXT += i + 1 + ": " + element.comentarios[i] + ", "
                     }
-    
+
                     //Iconos personalizados del marcador en funcion del tipo de fotografía
                     let icono = "";
                     let color = "";
                     let iconcolor = "";
                     switch (element.tipo_fotografia) {
                         case 'ciudad':
-                         icono = 'building';
-                         color = 'purple';
-                         iconcolor = 'white';
-                         break;
-                     case 'macro':
-                         icono = 'eye';
-                         color = 'orange';
-                         iconcolor = 'white';
-                         break;
-                     case 'paisaje':
-                         icono = 'image';
-                         color = 'green';
-                         iconcolor = 'white';
-                         break;
-                     case 'nocturna':
-                         icono = 'spinner';
-                         color = 'black';
-                         iconcolor = 'white';
-                         break;
-                     case 'LP':
-                         icono = 'star';
-                         color = 'gray';
-                         iconcolor = 'white';
-                         break;
-                     case 'ruinas':
-                         icono = 'registered';
-                         color = 'brown';
-                         iconcolor = 'white';
-                         break;
-                     case 'costa':
-                         icono = 'flag';
-                         color = 'darkblue';
-                         iconcolor = 'white';
-                         break;
-    
+                            icono = 'building';
+                            color = 'purple';
+                            iconcolor = 'white';
+                            break;
+                        case 'macro':
+                            icono = 'eye';
+                            color = 'orange';
+                            iconcolor = 'white';
+                            break;
+                        case 'paisaje':
+                            icono = 'image';
+                            color = 'green';
+                            iconcolor = 'white';
+                            break;
+                        case 'nocturna':
+                            icono = 'spinner';
+                            color = 'black';
+                            iconcolor = 'white';
+                            break;
+                        case 'LP':
+                            icono = 'star';
+                            color = 'gray';
+                            iconcolor = 'white';
+                            break;
+                        case 'ruinas':
+                            icono = 'registered';
+                            color = 'brown';
+                            iconcolor = 'white';
+                            break;
+                        case 'costa':
+                            icono = 'flag';
+                            color = 'darkblue';
+                            iconcolor = 'white';
+                            break;
+
                         default:
                             icono = 'image';
                             color = 'red';
@@ -211,9 +242,18 @@ function cargaDatos(url) {
                 });
                 map.addLayer(marcadores);
                 zoomMarcadores();
-                arrayMarkers=[];
+                arrayMarkers = [];
             }
-        });
+            else {
+                //Hacemos zoom a la localización del usuario
+                if (miPosicion) {
+                    map.setView([miPosicion.latitude, miPosicion.longitude], 14);
+                }
+
+            }
+            instrucciones();    //Mostramos el popup con las instrucciones
+        })
+        .catch(err => alert('Se a producido un error: ' + err));
 }
 
 cargaDatos('/mapas/mapa/datos/autor');

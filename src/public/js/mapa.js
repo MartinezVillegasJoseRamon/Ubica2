@@ -2,7 +2,7 @@
 //Inicialización del mapa
 var map = L.map('map', { center: [37.992225, -1.130542], zoom: 15 });
 var miPosicion;
-
+    
 
 //Capas de base
 //Cartografia
@@ -45,14 +45,19 @@ map.on('dblclick', e => {
 });
 
 //Mi Localización actual
-navigator.geolocation.getCurrentPosition(function (position) {
-    let Lat = position.coords.latitude;
-    let Long = position.coords.longitude;
-    miPosicion=position.coords;
-    
-    //Icono personalizado Font Awesome para Mi Localización
-    let marker = L.marker([Lat, Long], {icon: L.AwesomeMarkers.icon({ icon: 'camera', prefix: 'fa', markerColor: 'darkred', iconColor: 'white', spin: false }) }).bindPopup('Mi localización').addTo(map);
-});
+function miLocalizacion(){
+    let lat, long;
+    navigator.geolocation.getCurrentPosition(function (position) {
+        lat = position.coords.latitude;
+        long = position.coords.longitude;
+        miPosicion=position.coords;
+
+        //Icono personalizado Font Awesome para Mi Localización
+        let marker = L.marker([lat, long], {icon: L.AwesomeMarkers.icon({ icon: 'camera', prefix: 'fa', markerColor: 'darkred', iconColor: 'white', spin: false }) }).bindPopup('Mi localización').addTo(map);
+        });
+    };
+//Creamos el icono con la localización del usuario
+miLocalizacion();
 
 
 //Añadimos los marcadores recibidos al mapa
@@ -76,81 +81,94 @@ function cargaDatos(url) {
     fetch(url)
         .then(res => res.json())
         .then(res => {
-
             //Recorremos el array de puntos y vamos insertando cada marcador con su popup
-            res.forEach(element => {
-                //Variable para almacenar comentarios
-                let comentariosTXT = "";
-                for (let i = 0; i < element.comentarios.length; i++) {
-                    comentariosTXT += i + 1 + ": " + element.comentarios[i] + ", "
-                }
+            if (res && res.length) {
+                res.forEach(element => {
+                    //Variable para almacenar comentarios
+                    let comentariosTXT = "";
+                    for (let i = 0; i < element.comentarios.length; i++) {
+                        comentariosTXT += i + 1 + ": " + element.comentarios[i] + ", "
+                    }
 
-                 //Iconos personalizados del marcador en funcion del tipo de fotografía
-                 let icono = "";
-                 let color = "";
-                 let iconcolor = "";
-                 switch (element.tipo_fotografia) {
-                     case 'ciudad':
-                         icono = 'building';
-                         color = 'purple';
-                         iconcolor = 'white';
-                         break;
-                     case 'macro':
-                         icono = 'eye';
-                         color = 'orange';
-                         iconcolor = 'white';
-                         break;
-                     case 'paisaje':
-                         icono = 'image';
-                         color = 'green';
-                         iconcolor = 'white';
-                         break;
-                     case 'nocturna':
-                         icono = 'spinner';
-                         color = 'black';
-                         iconcolor = 'white';
-                         break;
-                     case 'LP':
-                         icono = 'star';
-                         color = 'gray';
-                         iconcolor = 'white';
-                         break;
-                     case 'ruinas':
-                         icono = 'registered';
-                         color = 'brown';
-                         iconcolor = 'white';
-                         break;
-                     case 'costa':
-                         icono = 'flag';
-                         color = 'darkblue';
-                         iconcolor = 'white';
-                         break;
- 
-                     default:
-                         icono = 'image';
-                         color = 'red';
-                         iconcolor = 'grey';
-                         break;
+                    //Iconos personalizados del marcador en funcion del tipo de fotografía
+                    let icono = "";
+                    let color = "";
+                    let iconcolor = "";
+                    switch (element.tipo_fotografia) {
+                        case 'ciudad':
+                            icono = 'building';
+                            color = 'purple';
+                            iconcolor = 'white';
+                            break;
+                        case 'macro':
+                            icono = 'eye';
+                            color = 'orange';
+                            iconcolor = 'white';
+                            break;
+                        case 'paisaje':
+                            icono = 'image';
+                            color = 'green';
+                            iconcolor = 'white';
+                            break;
+                        case 'nocturna':
+                            icono = 'spinner';
+                            color = 'black';
+                            iconcolor = 'white';
+                            break;
+                        case 'LP':
+                            icono = 'star';
+                            color = 'gray';
+                            iconcolor = 'white';
+                            break;
+                        case 'ruinas':
+                            icono = 'registered';
+                            color = 'brown';
+                            iconcolor = 'white';
+                            break;
+                        case 'costa':
+                            icono = 'flag';
+                            color = 'darkblue';
+                            iconcolor = 'white';
+                            break;
+    
+                        default:
+                            icono = 'image';
+                            color = 'red';
+                            iconcolor = 'grey';
+                            break;
+                    }
+                    //Dibujamos los marcadores
+                    let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: iconcolor }) })
+                        .bindPopup('<strong>Ubicación</strong>' + "<br>" +
+                            'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
+                            '<strong>Autor: </strong>' + element.autor + "<br>" +
+                            'Título: ' + element.titulo + "<br>" +
+                            'Tipo fotografía: ' + element.tipo_fotografia + "<br>" +
+                            'Dirección: ' + element.direccion + "<br>" +
+                            'Comentarios: ' + comentariosTXT + "<br>" +
+                            'Visitas: ' + element.visitas + "<br>" +
+                            'Imagen: ' + element.foto + "<br>"
+                        ).addTo(marcadores);
+                    arrayMarkers.push(marker);
+                });
+                map.addLayer(marcadores);
+                zoomMarcadores();
+                arrayMarkers=[];
+            }
+            else{
+                Swal.fire({
+                    title: "Mis Ubicaciones",
+                    icon: 'info',
+                    text: "No tienes ninguna ubicación aún",
+                    confirmButtonText: "Aceptar",
+                });
+                //Hacemos zoom a la localización del usuario
+                if(miPosicion){
+                map.flyTo([miPosicion.latitude, miPosicion.longitude], 14);
                 }
-                //Dibujamos los marcadores
-                let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: iconcolor }) })
-                    .bindPopup('<strong>Ubicación</strong>' + "<br>" +
-                        'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
-                        '<strong>Autor: </strong>' + element.autor + "<br>" +
-                        'Título: ' + element.titulo + "<br>" +
-                        'Tipo fotografía: ' + element.tipo_fotografia + "<br>" +
-                        'Dirección: ' + element.direccion + "<br>" +
-                        'Comentarios: ' + comentariosTXT + "<br>" +
-                        'Visitas: ' + element.visitas + "<br>" +
-                        'Imagen: ' + element.foto + "<br>"
-                    ).addTo(marcadores);
-                arrayMarkers.push(marker);
-            });
-            map.addLayer(marcadores);
-            zoomMarcadores();
-            arrayMarkers=[];
-
+            }
         })
+        .catch(err => alert(err));
 }
 
 cargaDatos('/mapas/mapa/datos');
