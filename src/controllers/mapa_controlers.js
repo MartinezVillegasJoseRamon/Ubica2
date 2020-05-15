@@ -77,7 +77,6 @@ try{
     visitas: 0
   });
   const puntoGuardado = await nuevaUbicacion.save();
-  //res.status(200).send({success: true});
   res.render('mapas/mapa');
 }catch(error){
   res.status(500).send({message: error.message});

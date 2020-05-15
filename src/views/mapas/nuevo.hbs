@@ -1,5 +1,5 @@
-<form method="POST" action="/mapas/upload" enctype="multipart/form-data">
-    <div class="row mt-3">
+<form name="formNuevo" method="POST" action="/mapas/upload" enctype="multipart/form-data">
+    <div class="row">
 
         {{!-- MAPA --}}
         <div class="card col-lg-5 mr-auto">
@@ -72,11 +72,14 @@
 
             </div>
             <div class="card-footer text-center">
-                <button type="submit" class="btn btn-success align-self-end">Insertar nueva ubicación
+                <button type="submit" id="enviar" class="btn btn-success align-self-end">Insertar nueva ubicación
             </div>
         </div>
 
     </div>
 </form>
 
-<script src="/js/mapa_nuevo.js"></script>
+    <script src="/js/mapa_nuevo.js"></script>
+
+    {{!-- Validación de datos de formulario en cliente --}}
+    <script type="text/javascript" src="/js/validacion.js"></script>
