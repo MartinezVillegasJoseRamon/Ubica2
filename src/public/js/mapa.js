@@ -132,9 +132,9 @@ function cargaDatos(url) {
                             break;
     
                         default:
-                            icono = 'image';
+                            icono = 'question-circle';
                             color = 'red';
-                            iconcolor = 'grey';
+                            iconcolor = 'yellow';
                             break;
                     }
                     //Dibujamos los marcadores

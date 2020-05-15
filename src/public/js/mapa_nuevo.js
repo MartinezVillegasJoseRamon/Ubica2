@@ -60,13 +60,15 @@ function instrucciones() {
         lat = centro.lat;
         lng = centro.lng;
     }
+    //-------------------------------------------------------------------
 
-    var popup = L.popup(/* {autoClose:false} */)
-        .setLatLng([lat, lng])
-        .setContent('Doble click para insertar una nueva ubicación. Puedes arrastrar el marcador para un ajuste fino');
-    map.addLayer(popup);
+    Swal.fire({
+        title: "Mis Ubicaciones",
+        icon: 'info',
+        text: "Haz doble click para situar tu nueva ubicación y arrastra el marcador para un ajuste fino",
+        confirmButtonText: "Empezar",
+    });
 }
-
 //Añadir marcador con doble click
 //Desactivar doble click con zoom
 map.doubleClickZoom.disable();
@@ -163,14 +165,14 @@ function cargaDatos(url) {
     //Hacemos fetch a la pagina que devuelve los datos de los puntos y creamos los marcadores
     fetch(url)
         .then(res => res.json())
-        .then(res => {            
-                        
+        .then(res => {
+
             // Comprobamos si tenemos datos que mostrar
             if (res) {
                 autorNuevaUbicacion = res.usuarioActual;
                 anadirAutor(autorNuevaUbicacion);//Añadimos el autor en el input del formulario
                 //Recorremos el array de puntos y vamos insertando cada marcador con su popup
-                arrayMarkers= res.puntos.map(element => {
+                arrayMarkers = res.puntos.map(element => {
                     //Variable para almacenar comentarios
                     let comentariosTXT = "";
                     for (let i = 0; i < element.comentarios.length; i++) {
@@ -218,9 +220,9 @@ function cargaDatos(url) {
                             break;
 
                         default:
-                            icono = 'image';
+                            icono = 'question-circle';
                             color = 'red';
-                            iconcolor = 'grey';
+                            iconcolor = 'yellow';
                             break;
                     }
                     //Dibujamos los marcadores
@@ -238,24 +240,23 @@ function cargaDatos(url) {
                     //arrayMarkers.push(marker);
                     return marker;
                 });
-                if(arrayMarkers.length){
+                if (arrayMarkers.length) {
                     map.addLayer(marcadores);
                     zoomMarcadores();
                     arrayMarkers = [];
                 }
-
-            }
-            else {
-                //Hacemos zoom a la localización del usuario
-                if (miPosicion) {
-                    map.setView([miPosicion.latitude, miPosicion.longitude], 14);
+                else {
+                    //Hacemos zoom a la localización del usuario
+                    if (miPosicion) {
+                        map.setView([miPosicion.latitude, miPosicion.longitude], 12);
+                    }
                 }
-
             }
             instrucciones();    //Mostramos el popup con las instrucciones
         })
         .catch(err => alert('Se a producido un error: ' + err));
 }
 
+//Llamamos al endpoint que carga los datos del usuario
 cargaDatos('/mapas/mapa/datos/autor');
 

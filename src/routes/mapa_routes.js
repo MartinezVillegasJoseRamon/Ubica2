@@ -15,13 +15,13 @@ router.get('/mapas/mapa', isAuthenticated, renderMapa);
 router.get('/mapas/mapa/datos', isAuthenticated, todosPuntos);
 
 // Endpoint que consulta todos los marcadores del autor actual de la BBDD
-router.get('/mapas/mapa/datos/autor', misUbicaciones);
+router.get('/mapas/mapa/datos/autor', isAuthenticated, misUbicaciones);
 
 // Endpoint añadir nuevo punto a BBDD
-router.get('/mapas/mapa/nuevo', renderNuevo);
+router.get('/mapas/mapa/nuevo', isAuthenticated, renderNuevo);
 
 // Endpoint subir imagen a BBDD
-router.post('/mapas/upload', upload);
+router.post('/mapas/upload', isAuthenticated, upload);
 
 //Exportamos el modulo para poder ser utilizado por otros procesos
 module.exports = router;
