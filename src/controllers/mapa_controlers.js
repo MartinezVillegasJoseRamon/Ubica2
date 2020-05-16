@@ -24,13 +24,13 @@ mapaCtrl.todosPuntos = (req, res) => {
   if(tipo && tipo!=='todas'){
     let puntos = Punto.find({tipo_fotografia: tipo},function (err, puntos) {
       if (err) return console.error(err);
-      return res.json(puntos);
+      return res.json({puntos, usuarioActual});
     });
   }else{
     //Si no hay seleccionado un tipo, buscamos todos los puntos
     let puntos = Punto.find(function (err, puntos) {
       if (err) return console.error(err);
-      return res.json(puntos);
+      return res.json({puntos, usuarioActual});
     });
   }
 
