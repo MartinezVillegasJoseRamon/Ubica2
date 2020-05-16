@@ -92,10 +92,6 @@ function anadirCoordenadas(coord) {
     document.getElementById("inputLng").value = coord.lng;
 };
 
-//Insertamos el autor del nuevo punto insertado
-function anadirAutor(autor) {
-    document.getElementById("inputAutor").value = autor;
-};
 
 // Actualiza el elemento 'img' de la vista con la imagen seleccionada una vez que el 
 // usuario ha seleccionado una, sin necesidad de pulsar ningún botón. 
