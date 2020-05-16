@@ -65,7 +65,7 @@ function instrucciones() {
     Swal.fire({
         title: "Mis Ubicaciones",
         icon: 'info',
-        text: "Haz doble click para situar tu nueva ubicación y arrastra el marcador para un ajuste fino",
+        text: "Haz doble click en el mapa para situar tu nueva ubicación y arrastra el marcador para un ajuste fino",
         confirmButtonText: "Empezar",
     });
 }
@@ -242,6 +242,7 @@ function cargaDatos(url) {
                 });
                 if (arrayMarkers.length) {
                     map.addLayer(marcadores);
+                    map.fitBounds(marcadores.getBounds());
                     zoomMarcadores();
                     arrayMarkers = [];
                 }

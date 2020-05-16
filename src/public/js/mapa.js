@@ -60,21 +60,15 @@ function miLocalizacion(){
 miLocalizacion();
 
 
-//Añadimos los marcadores recibidos al mapa
-let marcadores=L.layerGroup();  //Capa marcadores
-let arrayMarkers=[];    //Array para marcadores (zoom)
+//Creamos el cluster que contendrá los marcadores
+let marcadores=  L.markerClusterGroup({ disableClusteringAtZoom: 17 });
+
 
 //Elimina los marcadores
 function eliminaMarcadores(){
     map.removeLayer(marcadores);
     marcadores.clearLayers();
 };
-
-//Hacemos zoom a los marcadores creados con un margen de +1%
-function zoomMarcadores(){
-var group = new L.featureGroup(arrayMarkers);
-map.fitBounds(group.getBounds().pad(0.1));}
-
 
 function cargaDatos(url) {
     //Hacemos fetch a la pagina que devuelve los datos de los puntos y creamos los marcadores
@@ -148,12 +142,11 @@ function cargaDatos(url) {
                             'Comentarios: ' + comentariosTXT + "<br>" +
                             'Visitas: ' + element.visitas + "<br>" +
                             'Imagen: ' + element.foto + "<br>"
-                        ).addTo(marcadores);
-                    arrayMarkers.push(marker);
+                        );
+                    marcadores.addLayer(marker);
                 });
                 map.addLayer(marcadores);
-                zoomMarcadores();
-                arrayMarkers=[];
+                map.fitBounds(marcadores.getBounds().pad(0.1));
             }
             else{
                 Swal.fire({
