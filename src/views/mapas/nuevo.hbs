@@ -1,4 +1,6 @@
-<form name="formNuevo" method="POST" action="/mapas/upload" enctype="multipart/form-data">
+
+{{!-- La cabecera del formulario la controlamos con un fetch para obtener los errores --}}
+<form id="formNuevo">
     <div class="row">
 
         {{!-- MAPA --}}
@@ -27,7 +29,7 @@
 
                 <div class="custom-file ">
                     <input type="file" class="custom-file-input mt-2" id="inputSubirImagen" accept=".jpeg, .jpg"
-                        name="imagen">
+                        name="imagen" required>
                     <label class="custom-file-label mt-2" for="inputSubirImagen" id="labelInputSubirImagen">Elegir archivo</label>
                 </div>
             </div>
@@ -52,7 +54,7 @@
 
                     <label for="tipo_foto_nueva">Tipo de foto</label>
                     <select id="tipo_foto_nueva" class="custom-select mb-2" name="tipo_fotografia" required>
-                        <option>Tipo de foto</option>
+                        <option selected="true"></option>
                         <option value="paisaje">Paisaje</option>
                         <option value="macro">Macro</option>
                         <option value="nocturna">Nocturna</option>
@@ -72,7 +74,7 @@
 
             </div>
             <div class="card-footer text-center">
-                <button type="submit" id="enviar" class="btn btn-success align-self-end">Insertar nueva ubicación
+                <button type="button" id="enviar" class="btn btn-success align-self-end">Insertar nueva ubicación
             </div>
         </div>
 
@@ -85,6 +87,6 @@
     
     <script src="/js/mapa_nuevo.js"></script>
 
-    {{!-- Validación de datos de formulario en cliente --}}
-    <script type="text/javascript" src="/js/validacion.js"></script>
+    {{!-- Validación de datos de formulario en cliente 
+    <script type="text/javascript" src="/js/validacion.js"></script>--}}
 

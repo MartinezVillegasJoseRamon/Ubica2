@@ -20,8 +20,9 @@ router.get('/mapas/mapa/datos/autor', isAuthenticated, misUbicaciones);
 // Endpoint añadir nuevo punto a BBDD
 router.get('/mapas/mapa/nuevo', isAuthenticated, renderNuevo);
 
-// Endpoint subir imagen a BBDD
-router.post('/mapas/upload', isAuthenticated, upload);
+// Endpoint subir datos a BBDD
+router.post('/mapas/upload', upload);
+
 
 //Exportamos el modulo para poder ser utilizado por otros procesos
 module.exports = router;

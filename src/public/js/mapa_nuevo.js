@@ -2,6 +2,7 @@
 //Cargamos la vista inicial del mapa
 cargaMapa();
 
+
 //Creamos el marcador con "mi localización"
 miLocalizacion();
 
@@ -14,7 +15,7 @@ habilitarNuevoMarcador();
 //Mostramos en el thumbnail la imagen cargada
 cargaThumbnail();
 
-//Llamamos al endpoint que carga los datos del usuario
+//Llamamos al endpoint que carga las ubicaciones del usuario
 cargaDatos('/mapas/mapa/datos/autor');
 
 //Añadimos un marcador temporal al hacer doble click
@@ -31,9 +32,7 @@ let nuevaUbicacion = L.marker(latlng, {
     autoPan: true,
     opacity: 1
 }).bindPopup("<b>Nuevo</b>");
-
-//Obtenemos las coordenadas del doble click
-position = nuevaUbicacion.getLatLng();
+position = nuevaUbicacion.getLatLng();  //Obtenemos las coordenadas del doble click
 
 //Evento dragend - Se dispara cuando movemos el marcador
 nuevaUbicacion.on('dragend', function (event) {
@@ -41,14 +40,48 @@ nuevaUbicacion.on('dragend', function (event) {
     position = marker.getLatLng();
     anadirCoordenadas(position);
     marker.setLatLng(position, {draggable: 'true' }).bindPopup(position).update();
-});
+})
+
 //Añadimos el nuevo punto a una capa temporal y esa capa la mostramos en el mapa
 nuevaUbicacion.addTo(temp);
 temp.addTo(map);
-
-//Añadimos las coordenadas al formulario
-anadirCoordenadas(position);
-
-//Añadimos el nombe del autor con el usuario activo al formulario
-document.getElementById("inputAutor").value = autorNuevaUbicacion;
+anadirCoordenadas(position);    //Añadimos las coordenadas al formulario
+document.getElementById("inputAutor").value = autorNuevaUbicacion;  //Añadimos el nombe del autor con el usuario activo al formulario
 });
+
+//Capturamos el evento click del botón de formulario
+let botEnviar = document.getElementById('enviar');
+botEnviar.addEventListener('click', uploadClick, false);
+
+
+//Capturamos el formulario
+function uploadClick(event){
+    const form = document.getElementById('formNuevo');
+    const formData = new FormData(form);
+    uploadData(formData);
+};
+
+//Creamos la cabecera del envío
+function uploadData(form) {
+
+    const datos={
+        titulo : form.titulo,
+        latitud: form.latitud,
+        longitud: form.longitud,
+        autor: form.autor,
+        direccion: form.direccion,
+        acceso: form.acceso,
+        fecha_foto: form.fecha_foto,
+        imagen: form.imagen
+    };
+
+    const url = '/mapas/upload';
+    fetch(url, {
+    method: 'POST',
+    body: datos
+    })
+    .then(res => res.json())
+    .then(res => {
+    console.log(res);
+    })
+};

@@ -210,5 +210,17 @@ function cargaDatos(url) {
                 }
             }
         })
-        .catch(err => alert('Se a producido un error: ' + err));
+         .catch(err => {
+            let errDevueltos= "";
+             err.forEach(element => {
+                 errDevueltos += element + " ";
+             });
+             
+            Swal.fire({
+                title: "Mensaje del servidor",
+                icon: 'info',
+                text: errDevueltos,
+                confirmButtonText: "Ok",
+            })
+         });
 }
