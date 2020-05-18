@@ -1,4 +1,9 @@
 
+//Metodo para evitar el reenvío del formulario
+if (window.history.replaceState) { 
+    window.history.replaceState(null, null, window.location.href);
+}
+
 //Cargamos la vista inicial del mapa
 cargaMapa();
 
@@ -50,38 +55,45 @@ document.getElementById("inputAutor").value = autorNuevaUbicacion;  //Añadimos 
 });
 
 //Capturamos el evento click del botón de formulario
-let botEnviar = document.getElementById('enviar');
-botEnviar.addEventListener('click', uploadClick, false);
+let formulario = document.getElementById('formNuevo');
+formulario.addEventListener('submit', (evento =>{
+    evento.preventDefault();    //Evitamos que se envíe el formulario para controlarlo con el fetch y capturar la respuesta
+    uploadData();
+}));
 
+//Creamos el envío
+function uploadData() {
 
-//Capturamos el formulario
-function uploadClick(event){
-    const form = document.getElementById('formNuevo');
-    const formData = new FormData(form);
-    uploadData(formData);
-};
-
-//Creamos la cabecera del envío
-function uploadData(form) {
-
-    const datos={
-        titulo : form.titulo,
-        latitud: form.latitud,
-        longitud: form.longitud,
-        autor: form.autor,
-        direccion: form.direccion,
-        acceso: form.acceso,
-        fecha_foto: form.fecha_foto,
-        imagen: form.imagen
-    };
-
-    const url = '/mapas/upload';
+    const url = 'http://localhost:4000/mapas/upload';
     fetch(url, {
-    method: 'POST',
-    body: datos
+        method: 'POST',
+            body: new URLSearchParams({     //Objeto que contiene todos los parametros del formulario
+                titulo: inputTitulo.value,
+                latitud: inputLat.value,
+                longitud: inputLng.value,
+                autor: inputAutor.value,
+                direccion: inputDireccion.value,
+                acceso: inputAcceso.value,
+                fecha_foto: inputFechaFoto.value,
+                tipo_fotografia: tipo_fotografia.value
+            })
     })
     .then(res => res.json())
     .then(res => {
-    console.log(res);
+    if(res.message === 'ok'){
+        Swal.fire({
+            title: "Mensaje del servidor",
+            icon: 'success',
+            text: 'Ubicación guardada correctamente',
+            confirmButtonText: "Ok",
+        })
+    }else{
+        Swal.fire({
+            title: "Revisa la lista de errores",
+            icon: 'error',
+            text: 'Errores: ' + res.message,
+            confirmButtonText: "Ok",
+        })
+    }
     })
 };

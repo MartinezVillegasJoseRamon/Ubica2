@@ -101,7 +101,8 @@ mapaCtrl.upload = async (req, res) => {
         visitas: 0
       });
       const puntoGuardado = await nuevaUbicacion.save();
-      res.render('mapas/mapa');
+      //res.render('mapas/mapa');
+      res.status(200).json({message: 'ok'});
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

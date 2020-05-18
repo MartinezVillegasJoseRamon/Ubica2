@@ -1,6 +1,6 @@
 
 {{!-- La cabecera del formulario la controlamos con un fetch para obtener los errores --}}
-<form id="formNuevo">
+<form id="formNuevo" action="/mapas/upload" method="POST" enctype="multipart/form-data">
     <div class="row">
 
         {{!-- MAPA --}}
@@ -52,8 +52,8 @@
                     <input type="text" class="form-control text-center" id="inputAutor" placeholder="Autor" name="autor"
                         readonly>
 
-                    <label for="tipo_foto_nueva">Tipo de foto</label>
-                    <select id="tipo_foto_nueva" class="custom-select mb-2" name="tipo_fotografia" required>
+                    <label for="tipo_fotografia">Tipo de foto</label>
+                    <select id="tipo_fotografia" class="custom-select mb-2" name="tipo_fotografia" required>
                         <option selected="true"></option>
                         <option value="paisaje">Paisaje</option>
                         <option value="macro">Macro</option>
@@ -74,7 +74,7 @@
 
             </div>
             <div class="card-footer text-center">
-                <button type="button" id="enviar" class="btn btn-success align-self-end">Insertar nueva ubicación
+                <button type="submit" id="enviar" class="btn btn-success align-self-end">Insertar nueva ubicación
             </div>
         </div>
 
