@@ -7,6 +7,7 @@ const PuntoSchema = new Schema({
     tipo_fotografia: {type:String, required: true},
     titulo: {type:String, required: true},
     coordenadas: {type:[Number], required: true},
+    imagen: {type:String, required: true},
     autor: {type:String},
     direccion: {type:String},
     acceso: {type:String},

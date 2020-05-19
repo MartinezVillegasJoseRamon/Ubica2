@@ -62,8 +62,13 @@ mapaCtrl.upload = async (req, res) => {
     acceso,
     fecha_foto,
     latitud,
-    longitud
+    longitud,
   } = req.body;
+  
+  //Almacenamos la imagen
+  const {
+    imagen
+  } = req.files;
 
   //Validamos los datos recibidos
   let errores = [];
@@ -86,9 +91,27 @@ mapaCtrl.upload = async (req, res) => {
     errores.push('No se ha indicado el acceso a la ubicación');
   };
 
+  //Procesamos la imagen
+  let rutaAbsoluta; //Nombre final de la imagen que guardaremos en storage
+  if (!imagen) {
+    errores.push('No existe imagen para subir');
+  } else {
+    let archivoSubido = imagen;
+    let ruta = 'src/storage/';
+    let moment= Date.now();
+    let nombreArchivo = moment + titulo + '.jpg'; 
+    rutaAbsoluta = ruta + nombreArchivo;
+    archivoSubido.mv(rutaAbsoluta, function (err) {
+      if (err) {
+        errores.push(err);
+      }
+    })
+  };
+
+
   //Si no hay errores, guardamos la ubicación en BBDD
   if (!errores.length) {
-    //Tratamos los datos recibidos------------------------------------------------
+    //Tratamos los datos recibidos
     try {
       const nuevaUbicacion = Punto({
         autor,
@@ -98,57 +121,20 @@ mapaCtrl.upload = async (req, res) => {
         acceso,
         fecha_foto,
         coordenadas: [latitud, longitud],
+        imagen: rutaAbsoluta,
         visitas: 0
       });
+
       const puntoGuardado = await nuevaUbicacion.save();
-      //res.render('mapas/mapa');
-      res.status(200).json({message: 'ok'});
+      res.status(200).json({ message: 'ok' });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
 
   } else {  //En caso de existir errores, los devolvemos
-    res.status(500).json({ message: errores});
+    res.status(500).json({ message: errores });
   }
 };
 
 
 module.exports = mapaCtrl;
-
-  //EDICION CON JIMP-------------------
-
-
-  // Jimp.read(imagenSubida)
-  // .then(image => {
-  //   return image
-  //     .resize(256, 256) // resize
-  //     .quality(60) // set JPEG quality
-  //     .write('peq.jpg'); // save
-  // })
-  // .catch(err => {
-  //   console.error(err);
-  // });
-
-
-
-
-    // if (!req.files || Object.keys(req.files).length === 0) {
-  //   return res.status(400).send('No existe imagen para subir')
-  // }
-  // let archivoSubido = req.files.imagen; //Recuperamos el archivo enviado en el body
-  // let ruta = 'src/public/img/';
-  // let nombreArchivo = 'tmp.jpg';
-  // let rutaAbsoluta = ruta + nombreArchivo;
-
-  // return archivoSubido.mv(rutaAbsoluta, function (err) {
-  //   if (err) {
-  //     return res.sendStatus(500).send(err);
-  //   }
-  //   // Renderizamos de nuevo la vista. Podríamos pasar información a ésta
-  //   // si en el segundo parámetro añadimos un objeto para "rellenar la vista". También
-  //   // podemos redirigir a la vista que queramos con 'res.redirect('xxxx'), por ejemplo, 
-  //   // 'return res.redirect('/mapas/mapa/nuevo'). Esta acción también redibuja la vista.
-  //   // Más info: https://www.sitepoint.com/forms-file-uploads-security-node-express/
-  //   //return res.render('mapas/nuevo');
-  //   return res.sendStatus(200);
-  // });

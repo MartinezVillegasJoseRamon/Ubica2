@@ -63,20 +63,11 @@ formulario.addEventListener('submit', (evento => {
 
 //Creamos el envío
 function uploadData() {
-
+const formData = new FormData(formulario);
     const url = 'http://localhost:4000/mapas/upload';
     fetch(url, {
         method: 'POST',
-        body: new URLSearchParams({     //Objeto que contiene todos los parametros del formulario
-            titulo: inputTitulo.value,
-            latitud: inputLat.value,
-            longitud: inputLng.value,
-            autor: inputAutor.value,
-            direccion: inputDireccion.value,
-            acceso: inputAcceso.value,
-            fecha_foto: inputFechaFoto.value,
-            tipo_fotografia: tipo_fotografia.value
-        })
+        body: formData
     })
         .then(res => res.json())
         .then(res => {

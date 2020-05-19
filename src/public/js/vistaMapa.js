@@ -184,6 +184,7 @@ function cargaDatos(url) {
                             break;
                     }
                     //Dibujamos los marcadores
+                    let photo = `<img src=\\"localhost:4000/${element.imagen}\\" height=\\"auto\\" width=\\"200px\\"/>`
                     let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: iconcolor }) })
                         .bindPopup('<strong>Ubicación</strong>' + "<br>" +
                             'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
@@ -193,7 +194,7 @@ function cargaDatos(url) {
                             'Dirección: ' + element.direccion + "<br>" +
                             'Comentarios: ' + comentariosTXT + "<br>" +
                             'Visitas: ' + element.visitas + "<br>" +
-                            'Imagen: ' + element.foto + "<br>"
+                            'Imagen: ' + photo + "<br>"
                         ).addTo(marcadores)
                     return marker;
                 });
