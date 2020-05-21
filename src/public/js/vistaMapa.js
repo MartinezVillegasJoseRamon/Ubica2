@@ -183,8 +183,12 @@ function cargaDatos(url) {
                             iconcolor = 'yellow';
                             break;
                     }
+                    //Recuperamos la imagen del servidor
+                    let Img = '/mapas/img/' + element.imagen + "'";
+                    let photo = `<img src='${Img} height="auto" width="200px">`;
+                    //Si la ubicación no tiene imagen cargada, utilizamos una por defecto
+                    if(element.imagen === undefined) photo= `<img src='../img/noimg.jpg' height="auto" width="100px">`;
                     //Dibujamos los marcadores
-                    let photo = `<img src=\\"localhost:4000/${element.imagen}\\" height=\\"auto\\" width=\\"200px\\"/>`
                     let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: iconcolor }) })
                         .bindPopup('<strong>Ubicación</strong>' + "<br>" +
                             'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
@@ -193,8 +197,8 @@ function cargaDatos(url) {
                             'Tipo fotografía: ' + element.tipo_fotografia + "<br>" +
                             'Dirección: ' + element.direccion + "<br>" +
                             'Comentarios: ' + comentariosTXT + "<br>" +
-                            'Visitas: ' + element.visitas + "<br>" +
-                            'Imagen: ' + photo + "<br>"
+                            'Visitas: ' + element.visitas + "<br>" + "<br>" +
+                            'Foto: ' + photo + "<br>"
                         ).addTo(marcadores)
                     return marker;
                 });

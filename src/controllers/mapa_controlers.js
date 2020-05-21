@@ -93,13 +93,14 @@ mapaCtrl.upload = async (req, res) => {
 
   //Procesamos la imagen
   let rutaAbsoluta; //Nombre final de la imagen que guardaremos en storage
+  let nombreArchivo;
   if (!imagen) {
     errores.push('No existe imagen para subir');
   } else {
     let archivoSubido = imagen;
     let ruta = 'src/storage/';
     let moment= Date.now();
-    let nombreArchivo = moment + titulo + '.jpg'; 
+    nombreArchivo = moment + titulo + '.jpg'; 
     rutaAbsoluta = ruta + nombreArchivo;
     archivoSubido.mv(rutaAbsoluta, function (err) {
       if (err) {
@@ -121,7 +122,7 @@ mapaCtrl.upload = async (req, res) => {
         acceso,
         fecha_foto,
         coordenadas: [latitud, longitud],
-        imagen: rutaAbsoluta,
+        imagen: nombreArchivo,
         visitas: 0
       });
 
@@ -136,5 +137,9 @@ mapaCtrl.upload = async (req, res) => {
   }
 };
 
+mapaCtrl.getImage = (req, res) => {
+  let img = req.params.name;
+  res.sendFile('/storage/'+ img, {root: 'src'});
+};
 
 module.exports = mapaCtrl;
