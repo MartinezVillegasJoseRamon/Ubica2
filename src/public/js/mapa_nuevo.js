@@ -61,6 +61,8 @@ formulario.addEventListener('submit', (evento => {
     uploadData();
 }));
 
+
+
 //Creamos el envío
 function uploadData() {
 const formData = new FormData(formulario);

@@ -1,7 +1,7 @@
 //Variable del mapa
 let map;
- //Añadimos variables para manejo de marcadores
- let marcadores=  L.markerClusterGroup({ disableClusteringAtZoom: 17 });  //Capa marcadores
+//Añadimos variables para manejo de marcadores
+let marcadores = L.markerClusterGroup({ disableClusteringAtZoom: 17 });  //Capa marcadores
 let arrayMarkers = [];    //Array para marcadores
 
 let miPosicion;
@@ -36,7 +36,6 @@ function cargaMapa() {
     };
     //Añadimos las capas base al mapa
     L.control.layers(baseMaps).addTo(map);
-
 };
 
 //Mi Localización actual
@@ -74,11 +73,6 @@ function instrucciones() {
         confirmButtonText: "Empezar",
     });
 }
-//Añadir marcador con doble click
-//Desactivar doble click con zoom
-function habilitarNuevoMarcador() {
-
-};
 
 //Elimina los marcadores
 function eliminaMarcadores() {
@@ -118,7 +112,8 @@ function cargaThumbnail() {
     }
 };
 
-//Metodo para cargar los datos del usuario actual
+
+//Metodo para cargar los datos de ubicaciones del mapa
 function cargaDatos(url) {
     //Hacemos fetch a la pagina que devuelve los datos de los puntos y creamos los marcadores
     fetch(url)
@@ -185,21 +180,20 @@ function cargaDatos(url) {
                     }
                     //Recuperamos la imagen del servidor
                     let Img = '/mapas/img/' + element.imagen + "'";
-                    let photo = `<img src='${Img} height="auto" width="200px">`;
+                    let photo = `<img src='${Img} class="mx-auto" height="auto" width="200px">`;
+ 
                     //Si la ubicación no tiene imagen cargada, utilizamos una por defecto
-                    if(element.imagen === undefined) photo= `<img src='../img/noimg.jpg' height="auto" width="100px">`;
+                    if (element.imagen === undefined) photo = `<img src='../img/noimg.jpg' class="mx-auto" height="auto" width="100px">`;
                     //Dibujamos los marcadores
                     let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: iconcolor }) })
-                        .bindPopup('<strong>Ubicación</strong>' + "<br>" +
-                            'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
-                            '<strong>Autor: </strong>' + element.autor + "<br>" +
-                            'Título: ' + element.titulo + "<br>" +
-                            'Tipo fotografía: ' + element.tipo_fotografia + "<br>" +
-                            'Dirección: ' + element.direccion + "<br>" +
-                            'Comentarios: ' + comentariosTXT + "<br>" +
-                            'Visitas: ' + element.visitas + "<br>" + "<br>" +
-                            'Foto: ' + photo + "<br>"
-                        ).addTo(marcadores)
+                    .addTo(marcadores);
+                    //Añadimos el evento click al botón del marcador
+                    marker.on('click', function (e) {
+                        markerClick(e);
+
+                    })
+
+
                     return marker;
                 });
                 if (arrayMarkers.length) {
@@ -215,17 +209,55 @@ function cargaDatos(url) {
                 }
             }
         })
-         .catch(err => {
-            let errDevueltos= "";
-             err.forEach(element => {
-                 errDevueltos += element + " ";
-             });
-             
+        .catch(err => {
+            let errDevueltos = "";
+            err.forEach(element => {
+                errDevueltos += element + " ";
+            });
+
             Swal.fire({
                 title: "Mensaje del servidor",
                 icon: 'info',
                 text: errDevueltos,
                 confirmButtonText: "Ok",
             })
-         });
+        });
 }
+
+//Función para añadir popup personalizado
+function markerClick(e) {
+
+    var choicePopUp = L.popup();
+
+    botVer = createButton('Ver ubicación'),
+        choicePopUp
+            .setLatLng(e.latlng)
+            .setContent(botVer)
+            .openOn(map);
+    
+    //Evento del botón del popup de cada marcador
+    L.DomEvent.on(botVer, 'click', () => {
+        alert('Boton pulsado');
+    });
+};
+
+//Definimos el botón del popup
+function createButton(label) {
+    var btn = L.DomUtil.create('button', 'btn btn-info btn-block');
+    btn.setAttribute('type', 'button');
+    btn.innerHTML = label;
+    return btn;
+};
+
+    //.bindPopup(
+            // '<strong>Ubicación</strong>' + "<br>" +
+            // 'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
+            // '<strong>Autor: </strong>' + element.autor + "<br>" +
+            // 'Título: ' + element.titulo + "<br>" +
+            // 'Tipo fotografía: ' + element.tipo_fotografia + "<br>" +
+            // 'Dirección: ' + element.direccion + "<br>" +
+            // 'Comentarios: ' + comentariosTXT + "<br>" +
+            // 'Visitas: ' + element.visitas + "<br>" + "<br>" +
+            // 'Foto: ' + photo + "<br>" + "<br>" +
+            // 'Ver Ubicación: ' + botVer
+        //)
