@@ -3,7 +3,7 @@ const {Router} = require('express');
 const router = Router();
 
 //Requerimos las funciones que van a realizar la distintas rutas
-const {renderMapa, todosPuntos, misUbicaciones, renderNuevo, upload, getImage} = require('../controllers/mapa_controlers');
+const {renderMapa, todosPuntos, misUbicaciones, renderNuevo, upload, getImage, verDetalle} = require('../controllers/mapa_controlers');
 
 //Requerimos la funcion creada para verificar si hay un usuario autenticado
 const {isAuthenticated} = require('../helpers/auth');
@@ -25,6 +25,9 @@ router.post('/mapas/upload', upload);
 
 // Endpoint obtener imagen pasando nombre archivo
 router.get('/mapas/img/:name', getImage);
+
+// Endpoint ver detalle ubicación
+router.get('/mapas/detalle/:id', verDetalle);
 
 //Exportamos el modulo para poder ser utilizado por otros procesos
 module.exports = router;

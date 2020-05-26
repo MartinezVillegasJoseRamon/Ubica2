@@ -2,24 +2,23 @@
     <div class="container-fluid col-md-10" id="map">
         {{!-- Aqui se carga el contenido del mapa a mostrar --}}
     </div>
-
-    <div class="containerm col-lg-2" id="selectores">
-        <div class="card">
+    <div class="container col-lg-2 my-auto" id="selectores">
+        <div class="card my-3">
             <div class="card-header">
                 Navegación
             </div>
             <div class="card-body">
                 <button type="button" id="ver_todas" class="btn btn-success btn-block">Ver todo</button>
-                <button type="button" id="mis_ubicaciones" class="btn btn-success btn-block">Ver mis Ubicaciones</button>
+                <button type="button" id="mis_ubicaciones" class="btn btn-success btn-block">Ver mis
+                    Ubicaciones</button>
                 <button type="button" id="ver_miUbicacion" class="btn btn-success btn-block">Ver mi ubicación</button>
             </div>
         </div>
-
         {{!-- Aqui se cargan los filtros --}}
 
-        <div class="card mt-3">
+        <div class="card my-3">
             <div class="card-header">
-                Selectores
+                Navegación
             </div>
             <div class="card-body">
                 <select id="tipo_foto" class="custom-select mb-2">
@@ -33,16 +32,21 @@
                     <option value="costa">Costa</option>
                     <option value="todas">Todas</option>
                 </select>
+            </div>
+        </div>
 
+        {{!-- Aqui se cargan los filtros --}}
+        <div class="card my-3">
+            <div class="card-header">
+                Selección
+            </div>
+            <div class="card-body">
                 <button type="button" id="new" class="btn btn-success btn-block">Nueva ubicación</button>
                 <button type="button" id="edit" class="btn btn-warning btn-block">Editar existente</button>
                 <button type="button" id="delete" class="btn btn-danger btn-block">Eliminar ubicación</button>
-
-
             </div>
         </div>
     </div>
-
 </div>
 
 {{!-- Script para crear mapa --}}
@@ -50,4 +54,3 @@
 
 {{!-- Cargamos el archivo que está en la ruta global public y la ruta indicada --}}
 <script src="/js/mapa.js"></script>
-

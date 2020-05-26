@@ -1,0 +1,49 @@
+<div class="container-fluid px-0">
+    <div class="row">
+        <div class="container col-lg-9 mt-3">
+            <img class="img-fluid d-block mx-auto" id="img" style="max-height: 85vh" id="imagenThumbnail" src="/img/prueba.jpg"
+                alt="Imagen subida">
+        </div>
+        <div class="container col-lg-3 mt-3">
+            <p class=" h3 text-align-center">Propiedades de la ubicación</p>
+            <div class="input-group my-1 mt-3">
+                <span class="input-group-text">Autor</span>
+                <input type="text" class="form-control" id="inputAutor" aria-label="autor"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group my-1">
+                <span class="input-group-text">Titulo</span>
+                <input type="text" class="form-control" id="inputTitulo" aria-label="titulo"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group my-1">
+                <span class="input-group-text">Tipo de foto</span>
+                <input type="text" class="form-control" id="inputTipoFoto" aria-label="titulo"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group my-1">
+                <span class="input-group-text">Dirección</span>
+                <input type="text" class="form-control" id="inputDireccion" aria-label="titulo"
+                    aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group my-1">
+                <span class="input-group-text">Acceso</span>
+                <textarea type="text" class="form-control textarea" id="inputAcceso"></textarea>
+            </div>
+            <div class="container-fluid">
+                <input type="button" id="botExif" class="btn btn-success d-block mx-auto my-2" value="Ver datos EXIF"/>
+            </div>
+            <div class="container-fluid bg-success" id="map" style="height: 40vh;">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{{!-- Script para mapa --}}
+<script src="/js/vistaMapa.js"></script>
+
+<script src="/js/detalle.js"></script>
+
+{{!-- Script para extraer datos EXIF de la foto --}} 
+<script src="https://unpkg.com/exif-js@2.3.0"></script> 

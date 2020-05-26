@@ -94,8 +94,12 @@ mapaCtrl.upload = async (req, res) => {
   //Procesamos la imagen
   let rutaAbsoluta; //Nombre final de la imagen que guardaremos en storage
   let nombreArchivo;
-  if (!imagen) {
-    errores.push('No existe imagen para subir');
+  //Tamaño máximo permitido de archivos 3Mb
+  const tamMaximo = 3000000; 
+
+  //Validamos que existe imagen y no supera el tamaño maximo permitido
+  if (!imagen || imagen.size >tamMaximo) {
+    errores.push('No existe imagen para subir o su tamaño es incorrecto');
   } else {
     let archivoSubido = imagen;
     let ruta = 'src/storage/';
@@ -108,7 +112,6 @@ mapaCtrl.upload = async (req, res) => {
       }
     })
   };
-
 
   //Si no hay errores, guardamos la ubicación en BBDD
   if (!errores.length) {
@@ -141,5 +144,18 @@ mapaCtrl.getImage = (req, res) => {
   let img = req.params.name;
   res.sendFile('/storage/'+ img, {root: 'src'});
 };
+
+mapaCtrl.verDetalle = (req, res) =>{
+  
+  let id = req.params.id;
+  let puntos = Punto.find({ _id: id }, function (err, puntos) {
+    if (err) return console.error(err);
+    return puntos;
+  })
+
+  res.render('mapas/detalle');
+};
+
+
 
 module.exports = mapaCtrl;

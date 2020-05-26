@@ -64,8 +64,6 @@ function instrucciones() {
         lat = centro.lat;
         lng = centro.lng;
     }
-    //-------------------------------------------------------------------
-
     Swal.fire({
         title: "Mis Ubicaciones",
         icon: 'info',
@@ -91,25 +89,39 @@ function anadirCoordenadas(coord) {
 // usuario ha seleccionado una, sin necesidad de pulsar ningún botón. 
 function cargaThumbnail() {
 
+    //Tamaño máximo permitido de archivos 3Mb
+    const tamMaximo = 3000000;
+
     document.getElementById('inputSubirImagen').onchange = function (evt) {
         var tgt = evt.target || window.event.srcElement,
             files = tgt.files;
 
         // FileReader
         if (FileReader && files && files.length) {
-            var fr = new FileReader();
-            fr.onload = function () {   //Evento que se activa cuando la lectura es correcta
-                // Actualiza la imagen y hace que se vea en la web la preselección
-                document.getElementById('imagenThumbnail').src = fr.result;
-                if (tgt.files && tgt.files.length) {
-                    // Actualiza el label del input para mostrar el nombre de la imagen seleccionada
-                    document.getElementById('labelInputSubirImagen').innerHTML = tgt.files[0].name;
+            //Si el tamaño supera el maximo permitido no se procesa
+            if (tgt.files[0].size > tamMaximo) {
+                Swal.fire({
+                    title: "Tamaño de imagen",
+                    icon: 'error',
+                    text: 'El tamaño de la imagen supera el máximo permitido de 3Mb, por favor, reduce el tamaño de la foto.' +
+                        ' El tamaño actual de su foto es de ' + ((tgt.files[0].size) / 1000000).toFixed(2) + ' Mb',
+                    confirmButtonText: "Ok",
+                })
+            } else {
+                var fr = new FileReader();
+                fr.onload = function () {   //Evento que se activa cuando la lectura es correcta
+                    // Actualiza la imagen y hace que se vea en la web la preselección
+                    document.getElementById('imagenThumbnail').src = fr.result;
+                    if (tgt.files && tgt.files.length) {
+                        // Actualiza el label del input para mostrar el nombre de la imagen seleccionada
+                        document.getElementById('labelInputSubirImagen').innerHTML = tgt.files[0].name;
+                    }
                 }
+                fr.readAsDataURL(files[0]);
             }
-            fr.readAsDataURL(files[0]);
         }
-
     }
+    
 };
 
 
@@ -181,15 +193,15 @@ function cargaDatos(url) {
                     //Recuperamos la imagen del servidor
                     let Img = '/mapas/img/' + element.imagen + "'";
                     let photo = `<img src='${Img} class="mx-auto" height="auto" width="200px">`;
- 
+
                     //Si la ubicación no tiene imagen cargada, utilizamos una por defecto
                     if (element.imagen === undefined) photo = `<img src='../img/noimg.jpg' class="mx-auto" height="auto" width="100px">`;
                     //Dibujamos los marcadores
                     let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: iconcolor }) })
-                    .addTo(marcadores);
+                        .addTo(marcadores);
                     //Añadimos el evento click al botón del marcador
                     marker.on('click', function (e) {
-                        markerClick(e);
+                        markerClick(e, element, photo);
 
                     })
 
@@ -221,43 +233,46 @@ function cargaDatos(url) {
                 text: errDevueltos,
                 confirmButtonText: "Ok",
             })
-        });
+        })
 }
 
 //Función para añadir popup personalizado
-function markerClick(e) {
+function markerClick(e, elem, photo) {
 
     var choicePopUp = L.popup();
 
-    botVer = createButton('Ver ubicación'),
-        choicePopUp
-            .setLatLng(e.latlng)
-            .setContent(botVer)
-            .openOn(map);
-    
+    //id de la ubicación
+    let idUbicacion = elem._id;
+
+    //Creamos un div con la cabecera del popup
+    let container = L.DomUtil.create('div');
+
+    //Contenido del popup
+    container.innerHTML += '<strong>Ubicación</strong>' + "<br>" +
+        '<center>' + photo + '</center>' + "<br>" + "<br>" +
+        '<strong> Coordenadas (Lat, Long): </strong>' + elem.coordenadas + "<br>" + "<br>" +
+        '<strong>Autor: </strong>' + elem.autor + "<br>" +
+        'Título: ' + elem.titulo + "<br>" +
+        'Tipo fotografía: ' + elem.tipo_fotografia + "<br>" +
+        'Dirección: ' + elem.direccion + "<br>" + "<br>";
+    //Creamos el botón del popup
+    botVer = createButton('Ver ubicación', container);
+    choicePopUp
+        .setLatLng(e.latlng)
+        .setContent(container)
+        .openOn(map);
+
     //Evento del botón del popup de cada marcador
     L.DomEvent.on(botVer, 'click', () => {
-        alert('Boton pulsado');
+        //alert(idUbicacion);
+        window.location.href = `/mapas/detalle?id=${idUbicacion}`;//-------------------------------------------------
     });
 };
 
 //Definimos el botón del popup
-function createButton(label) {
-    var btn = L.DomUtil.create('button', 'btn btn-info btn-block');
+function createButton(label, container) {
+    var btn = L.DomUtil.create('button', 'btn btn-success btn-block', container);
     btn.setAttribute('type', 'button');
     btn.innerHTML = label;
     return btn;
 };
-
-    //.bindPopup(
-            // '<strong>Ubicación</strong>' + "<br>" +
-            // 'Coord.(Lat, Long): ' + element.coordenadas + "<br>" + "<br>" +
-            // '<strong>Autor: </strong>' + element.autor + "<br>" +
-            // 'Título: ' + element.titulo + "<br>" +
-            // 'Tipo fotografía: ' + element.tipo_fotografia + "<br>" +
-            // 'Dirección: ' + element.direccion + "<br>" +
-            // 'Comentarios: ' + comentariosTXT + "<br>" +
-            // 'Visitas: ' + element.visitas + "<br>" + "<br>" +
-            // 'Foto: ' + photo + "<br>" + "<br>" +
-            // 'Ver Ubicación: ' + botVer
-        //)
