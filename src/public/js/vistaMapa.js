@@ -265,7 +265,7 @@ function markerClick(e, elem, photo) {
     //Evento del botón del popup de cada marcador
     L.DomEvent.on(botVer, 'click', () => {
         //alert(idUbicacion);
-        window.location.href = `/mapas/detalle?id=${idUbicacion}`;//-------------------------------------------------
+        window.location.href = `/mapas/detalle/${idUbicacion}`;
     });
 };
 
