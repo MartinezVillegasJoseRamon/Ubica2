@@ -5,7 +5,7 @@ if (window.history.replaceState) {
 }
 
 //Cargamos la vista inicial del mapa
-cargaMapa();
+cargaMapaInicial();
 
 
 //Creamos el marcador con "mi localización"
@@ -19,7 +19,7 @@ instrucciones();
 cargaThumbnail();
 
 //Llamamos al endpoint que carga las ubicaciones del usuario
-cargaDatos('/mapas/mapa/datos/autor');
+cargaDatos('/mapas/misUbicaciones');
 
 //Añadimos un marcador temporal al hacer doble click
 map.doubleClickZoom.disable();  //Desactivamos el doble click para hacer zoom

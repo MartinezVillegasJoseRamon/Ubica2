@@ -3,7 +3,7 @@
 const express = require('express');
 const path = require('path');   //Modulo incluido en express para manejar rutas
 const exphbs = require('express-handlebars');  //Motor de plantillas de express, necesario para que funcione bien el modulo handlebars
-const morgan = require('morgan');   //Modulo para ver en consola las peticiones y su duración
+const morgan = require('morgan');   //Modulo para ver en consola las peticiones y su duración durante el desarrollo
 const Handlebars = require('handlebars');   //Motor de plantillas
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
 const methodOverride = require('method-override');  //Permite las llamadas HTTP en las plantillas
@@ -41,8 +41,6 @@ app.set('view engine', '.hbs');
 //---------------- Middlewares (funciones que se ejecutan cuando llegan las peticiones)
 
 //Los datos recibidos se codifican como JSON
-// app.use(express.urlencoded({extended: false}));
-// app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 

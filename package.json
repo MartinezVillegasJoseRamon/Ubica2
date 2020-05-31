@@ -22,7 +22,6 @@
     "express-handlebars": "^4.0.0",
     "express-session": "^1.17.0",
     "handlebars": "^4.7.6",
-    "jimp": "^0.10.3",
     "leaflet": "^1.6.0",
     "leaflet.awesome-markers": "^2.0.5",
     "leaflet.markercluster": "^1.4.1",

@@ -1,5 +1,6 @@
 //Variable del mapa
 let map;
+
 //Añadimos variables para manejo de marcadores
 let marcadores = L.markerClusterGroup({ disableClusteringAtZoom: 17 });  //Capa marcadores
 let arrayMarkers = [];    //Array para marcadores
@@ -7,7 +8,7 @@ let arrayMarkers = [];    //Array para marcadores
 let miPosicion;
 let autorNuevaUbicacion;
 
-function cargaMapa() {
+function cargaMapaInicial() {
     //Inicialización del mapa
     map = L.map('map', { center: [37.992225, -1.130542], zoom: 15 });
     var markers = new L.LayerGroup().addTo(map);
@@ -121,7 +122,6 @@ function cargaThumbnail() {
             }
         }
     }
-    
 };
 
 
@@ -135,7 +135,6 @@ function cargaDatos(url) {
             // Comprobamos si tenemos datos que mostrar
             if (res) {
                 autorNuevaUbicacion = res.usuarioActual;
-                //anadirAutor(autorNuevaUbicacion);//Añadimos el autor en el input del formulario
                 //Recorremos el array de puntos y vamos insertando cada marcador con su popup
                 arrayMarkers = res.puntos.map(element => {
                     //Variable para almacenar comentarios
@@ -195,7 +194,7 @@ function cargaDatos(url) {
                     let photo = `<img src='${Img} class="mx-auto" height="auto" width="200px">`;
 
                     //Si la ubicación no tiene imagen cargada, utilizamos una por defecto
-                    if (element.imagen === undefined) photo = `<img src='../img/noimg.jpg' class="mx-auto" height="auto" width="100px">`;
+                    if (element.imagen === undefined) photo = `<img src='../img/noimg.jpg' class="mx-auto" height="auto" width="50px">`;
                     //Dibujamos los marcadores
                     let marker = L.marker(element.coordenadas, { icon: L.AwesomeMarkers.icon({ icon: icono, prefix: 'fa', markerColor: color, spin: false, iconColor: iconcolor }) })
                         .addTo(marcadores);
@@ -204,8 +203,6 @@ function cargaDatos(url) {
                         markerClick(e, element, photo);
 
                     })
-
-
                     return marker;
                 });
                 if (arrayMarkers.length) {
@@ -238,35 +235,50 @@ function cargaDatos(url) {
 
 //Función para añadir popup personalizado
 function markerClick(e, elem, photo) {
-
-    var choicePopUp = L.popup();
-
+    let choicePopUp = L.popup();
     //id de la ubicación
     let idUbicacion = elem._id;
+    window.sessionStorage.setItem('idUbicacion', idUbicacion);
+    let modo = window.sessionStorage.getItem('modo');
+
 
     //Creamos un div con la cabecera del popup
     let container = L.DomUtil.create('div');
 
     //Contenido del popup
-    container.innerHTML += '<strong>Ubicación</strong>' + "<br>" +
+    container.innerHTML += '<h3>Ubicación</h3>' + "<br>" +
         '<center>' + photo + '</center>' + "<br>" + "<br>" +
         '<strong> Coordenadas (Lat, Long): </strong>' + elem.coordenadas + "<br>" + "<br>" +
         '<strong>Autor: </strong>' + elem.autor + "<br>" +
-        'Título: ' + elem.titulo + "<br>" +
-        'Tipo fotografía: ' + elem.tipo_fotografia + "<br>" +
-        'Dirección: ' + elem.direccion + "<br>" + "<br>";
+        '<strong>Título: </strong>' + elem.titulo + "<br>" +
+        '<strong>Tipo fotografía: </strong>' + elem.tipo_fotografia + "<br>" +
+        '<strong>Dirección: </strong>' + elem.direccion + "<br>" + "<br>";
+
     //Creamos el botón del popup
-    botVer = createButton('Ver ubicación', container);
+    //En función del modo mostramos un valor distinto en el boton del popup
+    if (!modo) {
+        botVer = createButton('Ver detalles', container);
+    } 
+    else if (modo === 'edit') {
+        botVer = createButton('Ver ubicación para editar', container);
+    } 
+    else if (modo === 'delete') {
+        botVer = createButton('Ver ubicación para eliminar', container);
+    }
+
+    //Evento del botón del popup de cada marcador en modo normal
+    L.DomEvent.on(botVer, 'click', () => {
+        window.location.href = `/mapas/detalle/${idUbicacion}`;
+    });
+
+    //Configuración del popup
     choicePopUp
         .setLatLng(e.latlng)
         .setContent(container)
         .openOn(map);
 
-    //Evento del botón del popup de cada marcador
-    L.DomEvent.on(botVer, 'click', () => {
-        //alert(idUbicacion);
-        window.location.href = `/mapas/detalle/${idUbicacion}`;
-    });
+    //Reiniciamos el valor de la variable
+    window.sessionStorage.removeItem('modo');
 };
 
 //Definimos el botón del popup

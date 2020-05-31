@@ -6,18 +6,18 @@ const Jimp = require('jimp');   //Paquete para edicion de imagenes, resize, B/W,
 
 let usuarioActual = "";
 
-//Funcion para renderizar el mapa
+//Funcion para renderizar el mapa al iniciar sesion
 mapaCtrl.renderMapa = (req, res) => {
+  
   usuarioActual = req.user.name;
   let puntos = Punto.find(function (err, puntos) {
     if (err) return console.error(err);
     return puntos;
   });
-
   res.render('mapas/mapa');
 };
 
-//Metodo que recupera todos los marcadores de la BBDD
+//Metodo que recupera todos los marcadores de la BBDD y si existe un filtro, solo los filtrados
 mapaCtrl.todosPuntos = (req, res) => {
   let tipo = req.query.tipo;
   //Si hemos recibido un tipo, filtramos los puntos con ese tipo
@@ -33,15 +33,12 @@ mapaCtrl.todosPuntos = (req, res) => {
       return res.json({ puntos, usuarioActual });
     });
   }
-
 };
 
-//Filtrado por parametros en marcadores de la BBDD
+//Muestra las ubicaciones del usuario actual
 mapaCtrl.misUbicaciones = (req, res) => {
-
   let puntos = Punto.find({ autor: usuarioActual }, function (err, puntos) {
     if (err) return err;
-
     return res.json({ puntos, usuarioActual });
   });
 };
@@ -140,22 +137,38 @@ mapaCtrl.upload = async (req, res) => {
   }
 };
 
+//Obtenemos la imagen guardada en la carpeta de imagenes y con el nombre recibido por parametros
 mapaCtrl.getImage = (req, res) => {
   let img = req.params.name;
   res.sendFile('/storage/'+ img, {root: 'src'});
 };
 
+//Renderizamos la vista para ver el detalle de una ubicación
 mapaCtrl.verDetalle = (req, res) =>{
-  
-  let id = req.params.id;
-  let puntos = Punto.find({ _id: id }, function (err, puntos) {
-    if (err) return console.error(err);
-    return puntos;
-  })
+    let id = req.params.id;
+    res.render('mapas/detalle', {id});
+};
 
-  res.render('mapas/detalle');
+//Renderizamos la vista para editar de una ubicación
+mapaCtrl.editarUbicacion = (req, res) =>{
+  let id = req.params.id;
+  res.render('mapas/detalle', {edit: true}, {id});
+};
+
+//Renderizamos la vista para eliminar de una ubicación
+mapaCtrl.eliminarUbicacion = (req, res) =>{
+  let id = req.params.id;
+  res.render('mapas/detalle', {delete: true}, {id});
 };
 
 
+//Recupera de la BBDD todos los datos del elemento identificado por su _id
+mapaCtrl.datosDetalle = (req, res) =>{
+  let id = req.params.id;
+  Punto.find({ _id: id }, function (err, puntos) {
+    if (err) return console.error(err);
+    return res.json(puntos);
+  })
+};
 
 module.exports = mapaCtrl;

@@ -1,11 +1,65 @@
 //Cargamos la vista inicial del mapa
-cargaMapa();
+cargaMapaInicial();
 
 //Creamos el marcador con "mi localización"
 miLocalizacion();
 
-//Llamamos al endpoint que carga la ubicación de la foto
-//cargaDatos('/mapas/detalle');
+//Descargamos los datos de la ubicación
+let idUbicacion=window.sessionStorage.getItem('idUbicacion');
+
+//Una vez creados los elementos, hacemos la consulta de datos para ir llenando los inputs
+window.onload = descargaDatos('/mapas/detalle/' +idUbicacion+ '/ubicacion');
+
+//Funcion que descarga los datos del servidor
+function descargaDatos(url){
+
+    fetch(url)
+        .then(res => res.json())
+        .then(res => {
+            // Comprobamos si tenemos datos que mostrar
+            if (res) {
+                //Convertimos la fecha ISODate para que la admita el input
+                let date = res[0].fecha_foto;
+                let fecha;
+                if(date){
+                    fecha = date.split("T")[0];
+                    document.getElementById("inputFechaFoto").value=fecha;
+                };
+                //Rellenamos los inputs con los datos devueltos
+                document.getElementById("inputAutor").value=res[0].autor;
+                document.getElementById("inputTitulo").value=res[0].titulo;
+                
+                document.getElementById("inputTipoFoto").value=res[0].tipo_fotografia;
+                document.getElementById("inputDireccion").value=res[0].direccion;
+                document.getElementById("inputAcceso").value=res[0].acceso;
+                document.getElementById("inputAutor").value=res[0].autor;
+                document.getElementById("inputAutor").value=res[0].autor;
+                //Dibujamos el marcador en las coordenadas del punto actual
+                let lat=res[0].coordenadas[0];
+                let long=res[0].coordenadas[1];
+                let marker = L.marker([lat, long], { icon: L.AwesomeMarkers.icon(
+                    { icon: 'check-circle', prefix: 'fa', markerColor: 'blue', iconColor: 'white', spin: false }) 
+                }).bindPopup('Ubicación Actual').addTo(map);
+                map.flyTo([lat, long], 12);
+                //Descargamos la imagen correspondiente al punto
+                if(res[0].imagen) descargaImagen(res[0].imagen);
+            }
+        })
+        .catch(err => {
+                console.log(err);
+            })
+};
+
+//Funcion para descargar imagen de la ubicación
+function descargaImagen(nombre){
+    let imagen = ('/mapas/img/' + nombre);
+    document.getElementById("img").src=imagen;
+};
+
+//Botón volver al mapa
+document.getElementById("botVolver").addEventListener("click", function(){
+    window.location.href = "/mapas/mapa";
+  });
 
 // //Añadimos los datos exif
 document.getElementById('botExif').onclick = function () {
