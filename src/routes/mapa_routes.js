@@ -24,8 +24,6 @@ router.get('/mapas/edit/:id', isAuthenticated, editarUbicacion);
 router.get('/mapas/delete/:id', isAuthenticated, eliminarUbicacion);
 
 
-
-
 // Endpoint añadir nuevo punto a BBDD
 router.get('/mapas/mapa/nuevo', isAuthenticated, renderNuevo);
 

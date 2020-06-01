@@ -146,19 +146,19 @@ mapaCtrl.getImage = (req, res) => {
 //Renderizamos la vista para ver el detalle de una ubicación
 mapaCtrl.verDetalle = (req, res) =>{
     let id = req.params.id;
-    res.render('mapas/detalle', {id});
+    res.render('mapas/detalle', {normal: true, id});
 };
 
 //Renderizamos la vista para editar de una ubicación
 mapaCtrl.editarUbicacion = (req, res) =>{
   let id = req.params.id;
-  res.render('mapas/detalle', {edit: true}, {id});
+  res.render('mapas/detalle', {edit: true, id});
 };
 
 //Renderizamos la vista para eliminar de una ubicación
 mapaCtrl.eliminarUbicacion = (req, res) =>{
   let id = req.params.id;
-  res.render('mapas/detalle', {delete: true}, {id});
+  res.render('mapas/detalle', {delete: true, id});
 };
 
 

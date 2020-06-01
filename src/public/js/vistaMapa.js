@@ -87,7 +87,7 @@ function anadirCoordenadas(coord) {
 
 
 // Actualiza el elemento 'img' de la vista con la imagen seleccionada una vez que el 
-// usuario ha seleccionado una, sin necesidad de pulsar ningún botón. 
+// usuario ha seleccionado una, sin necesidad de otros eventos
 function cargaThumbnail() {
 
     //Tamaño máximo permitido de archivos 3Mb
@@ -256,20 +256,30 @@ function markerClick(e, elem, photo) {
 
     //Creamos el botón del popup
     //En función del modo mostramos un valor distinto en el boton del popup
+    //La ruta cambia en función del modo para ejecutar una funcion distinta en el servidor
     if (!modo) {
         botVer = createButton('Ver detalles', container);
-    } 
+            //Evento del botón del popup de cada marcador en modo normal
+            L.DomEvent.on(botVer, 'click', () => {
+            window.location.href = `/mapas/detalle/${idUbicacion}`;
+        });
+    }
     else if (modo === 'edit') {
         botVer = createButton('Ver ubicación para editar', container);
-    } 
+            //Evento del botón del popup de cada marcador en modo normal
+            L.DomEvent.on(botVer, 'click', () => {
+            window.location.href = `/mapas/edit/${idUbicacion}`;
+        });
+    }
     else if (modo === 'delete') {
         botVer = createButton('Ver ubicación para eliminar', container);
+            //Evento del botón del popup de cada marcador en modo normal
+            L.DomEvent.on(botVer, 'click', () => {
+            window.location.href = `/mapas/delete/${idUbicacion}`;
+        });
     }
 
-    //Evento del botón del popup de cada marcador en modo normal
-    L.DomEvent.on(botVer, 'click', () => {
-        window.location.href = `/mapas/detalle/${idUbicacion}`;
-    });
+
 
     //Configuración del popup
     choicePopUp

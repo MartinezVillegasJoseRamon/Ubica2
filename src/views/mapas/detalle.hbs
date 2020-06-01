@@ -19,34 +19,63 @@
                 <span class="input-group-text">Autor</span>
                 <input type="text" class="form-control" id="inputAutor" aria-label="autor"
                     aria-describedby="basic-addon1" disabled>
+
             </div>
             <div class="input-group my-1">
                 <span class="input-group-text">Titulo</span>
                 <input type="text" class="form-control" id="inputTitulo" aria-label="titulo"
-                    aria-describedby="basic-addon1" disabled>
+                    aria-describedby="basic-addon1" 
+                    {{#if edit}}enabled
+                    {{else}}disabled {{/if}}>
             </div>
             <div class="input-group my-1">
                 <span class="input-group-text">Fecha foto</span>
                 <input type="date" class="form-control" id="inputFechaFoto" aria-label="fecha_foto"
-                    aria-describedby="basic-addon1" disabled>
+                    aria-describedby="basic-addon1" 
+                    {{#if edit}}enabled
+                    {{else}}disabled {{/if}}>
             </div>
             <div class="input-group my-1">
                 <span class="input-group-text">Tipo de foto</span>
-                <input type="text" class="form-control" id="inputTipoFoto" aria-label="tipo"
-                    aria-describedby="basic-addon1" disabled>
+                     <select id="inputTipoFoto" class="form-control" name="tipo_fotografia" required  
+                    {{#if edit}}enabled
+                    {{else}}disabled {{/if}}>
+                        <option value="paisaje">Paisaje</option>
+                        <option value="macro">Macro</option>
+                        <option value="nocturna">Nocturna</option>
+                        <option value="LP">Light Painting</option>
+                        <option value="ruinas">Ruinas</option>
+                        <option value="ciudad">Ciudad</option>
+                        <option value="costa">Costa</option>
+                        <option value="todas">Todas</option>
+                    </select>
             </div>
             <div class="input-group my-1">
                 <span class="input-group-text">Dirección</span>
                 <input type="text" class="form-control" id="inputDireccion" aria-label="direccion"
-                    aria-describedby="basic-addon1" disabled>
+                    aria-describedby="basic-addon1" 
+                    {{#if edit}}enabled
+                    {{else}}disabled {{/if}}>
             </div>
             <div class="input-group my-1">
                 <span class="input-group-text">Acceso</span>
-                <textarea type="text" class="form-control textarea" id="inputAcceso" disabled></textarea>
+                <textarea type="text" class="form-control textarea" id="inputAcceso" 
+                    {{#if edit}}enabled
+                    {{else}}disabled {{/if}}>
+                </textarea>
             </div>
             <div class="container-fluid">
-                <input type="button" id="botExif" class="btn btn-success d-block mx-auto my-2" value="Ver datos EXIF"/>
-                <input type="button" id="botVolver" class="btn btn-success d-block mx-auto my-2" value="Volver"/>
+                <input type="button" id="botExif" class="btn btn-dark mx-auto my-2" value="Ver datos EXIF"/>
+                <input type="button" id="botVolver" class="btn btn-success mx-auto my-2" value="Volver"/>
+                {{!-- Si estamos en modo edición mostramos el boton actualizar --}}
+                {{#if edit}}
+                    <input type="button" id="botUpdate" class="btn btn-warning mx-auto my-2" value="Actualizar"/>
+                {{/if}}
+
+                {{!-- Si estamos en modo eliminación mostramos el boton eliminar --}}
+                {{#if delete}}
+                    <input type="button" id="botDelete" class="btn btn-danger mx-auto my-2" value="Eliminar"/>
+                {{/if}}
             </div>
             <div class="container-fluid bg-success" id="map" style="height: 40vh;">
                 
