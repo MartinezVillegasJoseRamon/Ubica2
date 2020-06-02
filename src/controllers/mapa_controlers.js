@@ -2,7 +2,6 @@
 //Creamos un objeto controlador
 const mapaCtrl = {};
 const Punto = require('../models/Punto');
-const Jimp = require('jimp');   //Paquete para edicion de imagenes, resize, B/W, etc
 
 let usuarioActual = "";
 
@@ -159,6 +158,28 @@ mapaCtrl.editarUbicacion = (req, res) =>{
 mapaCtrl.eliminarUbicacion = (req, res) =>{
   let id = req.params.id;
   res.render('mapas/detalle', {delete: true, id});
+};
+
+mapaCtrl.actualizarEnBBDD = (req, res) =>{
+let id=req.params.id;
+let titulo = req.body.titulo;
+let fecha_foto = req.body.fecha_foto;
+let tipo_fotografia = req.body.tipo_fotografia;
+let direccion = req.body.direccion;
+let acceso = req.body.acceso;
+let latitud = req.body.latitud;
+let longitud = req.body.longitud;
+let coordenadas = [latitud, longitud];
+
+Punto.findOneAndUpdate({ _id: id }, {titulo, fecha_foto, tipo_fotografia, direccion, acceso, coordenadas}, {new: true}, function (err, resultado) {
+  if (err) return console.error(err);
+res.send(resultado);
+})
+
+};
+
+mapaCtrl.eliminarEnBBDD = (req, res) =>{
+
 };
 
 

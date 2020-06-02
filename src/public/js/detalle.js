@@ -1,3 +1,4 @@
+
 //Cargamos la vista inicial del mapa
 cargaMapaInicial();
 
@@ -6,6 +7,8 @@ miLocalizacion();
 
 //Descargamos los datos de la ubicación
 let idUbicacion = window.sessionStorage.getItem('idUbicacion');
+
+let marcadorActivo = new L.Marker();
 
 //Una vez creados los elementos, hacemos la consulta de datos para ir llenando los inputs
 window.onload = descargaDatos('/mapas/detalle/' + idUbicacion + '/ubicacion');
@@ -37,11 +40,12 @@ function descargaDatos(url) {
                 //Dibujamos el marcador en las coordenadas del punto actual
                 let lat = res[0].coordenadas[0];
                 let long = res[0].coordenadas[1];
-                let marker = L.marker([lat, long], {
+                let marker = L.marker([lat, long], { draggable: 'true' },{
                     icon: L.AwesomeMarkers.icon(
-                        { icon: 'check-circle', prefix: 'fa', markerColor: 'blue', iconColor: 'white', spin: false })
+                        { icon: 'check-circle', prefix: 'fa', markerColor: 'blue', iconColor: 'white', spin: false})
                 }).bindPopup('Ubicación Actual').addTo(map);
                 map.flyTo([lat, long], 12);
+                marcadorActivo = marker;
                 //Descargamos la imagen correspondiente al punto
                 if (res[0].imagen) descargaImagen(res[0].imagen);
             }
@@ -62,31 +66,41 @@ document.getElementById("botVolver").addEventListener("click", function () {
     window.location.href = "/mapas/mapa";
 });
 
+
 //Botón actualizar  //---------------------------------------------------------------------------------------------
 if (document.getElementById("botUpdate")) {
     document.getElementById("botUpdate").addEventListener("click", function () {
-        Swal.fire({
-            title: 'Actualizar',
-            icon: 'warning',
-            text: 'Datos actualizados',
-            confirmButtonText: 'Ok',
-        }).then ((result) =>{
-            window.location.href = "/mapas/mapa";
-        })
+            //window.location.href = `/mapas/actualizar/${idUbicacion}`;
+            const formData = new FormData();
+            formData.append("titulo", document.getElementById("inputTitulo").value);
+            formData.append("fecha_foto", document.getElementById("inputFechaFoto").value);
+            formData.append("tipo_fotografia", document.getElementById("inputTipoFoto").value);
+            formData.append("direccion", document.getElementById("inputDireccion").value);
+            formData.append("acceso", document.getElementById("inputAcceso").value);
+            formData.append("latitud", marcadorActivo.getLatLng().lat);
+            formData.append("longitud", marcadorActivo.getLatLng().lng);
+            
+
+            const url = `/mapas/actualizar/${idUbicacion}`;
+            fetch(url, {
+                method: 'PUT',
+                body: formData
+            })
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res);
+                    
+                })
+                .catch(err =>{
+
+                })
     });
 }
 
 //Botón eliminar    //---------------------------------------------------------------------------------------------
 if (document.getElementById("botDelete")) {
     document.getElementById("botDelete").addEventListener("click", function () {
-        Swal.fire({
-            title: 'Eliminar',
-            icon: 'warning',
-            text: 'Ubicación eliminada',
-            confirmButtonText: 'Ok',
-        }).then ((result) =>{
-            window.location.href = "/mapas/mapa";
-        })
+        //window.location.href = `/mapas/eliminar/${idUbicacion}`;
     });
 }
 

@@ -5,6 +5,7 @@ const {MAP_MONGODB_HOST, MAP_MONGODB_DATABASE} = process.env;
 const MONGODB_URI = `mongodb://${MAP_MONGODB_HOST}/${MAP_MONGODB_DATABASE}`;
 
 mongoose.connect(MONGODB_URI, {
+    useFindAndModify: false,
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true

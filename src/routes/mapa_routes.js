@@ -3,7 +3,8 @@ const {Router} = require('express');
 const router = Router();
 
 //Requerimos las funciones que van a realizar la distintas rutas
-const {renderMapa, todosPuntos, misUbicaciones, renderNuevo, upload, getImage, verDetalle, datosDetalle, editarUbicacion, eliminarUbicacion} = require('../controllers/mapa_controlers');
+const {renderMapa, todosPuntos, misUbicaciones, renderNuevo, upload, getImage, verDetalle, 
+    datosDetalle, editarUbicacion, eliminarUbicacion, actualizarEnBBDD, eliminarEnBBDD} = require('../controllers/mapa_controlers');
 
 //Requerimos la funcion creada para verificar si hay un usuario autenticado
 const {isAuthenticated} = require('../helpers/auth');
@@ -22,6 +23,12 @@ router.get('/mapas/edit/:id', isAuthenticated, editarUbicacion);
 
 // Endpoint que consulta todos los marcadores del autor actual de la BBDD
 router.get('/mapas/delete/:id', isAuthenticated, eliminarUbicacion);
+
+// Endpoint que actualiza los datos de la ubicación editada la BBDD
+router.put('/mapas/actualizar/:id', isAuthenticated, actualizarEnBBDD);
+
+// Endpoint que elimina la ubicación de la BBDD
+router.delete('/mapas/eliminar/:id', isAuthenticated, eliminarEnBBDD);
 
 
 // Endpoint añadir nuevo punto a BBDD
