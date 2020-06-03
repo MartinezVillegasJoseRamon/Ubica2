@@ -5,6 +5,7 @@ cargaMapaInicial();
 //Creamos el marcador con "mi localización"
 miLocalizacion();
 
+
 //Descargamos los datos de la ubicación
 let idUbicacion = window.sessionStorage.getItem('idUbicacion');
 
@@ -40,9 +41,12 @@ function descargaDatos(url) {
                 //Dibujamos el marcador en las coordenadas del punto actual
                 let lat = res[0].coordenadas[0];
                 let long = res[0].coordenadas[1];
-                let marker = L.marker([lat, long], { draggable: 'true' },{
+                //En función del modo hacemos el marcador "draggable" o no
+                let drag = false;
+                if (sessionStorage.modo === 'edit') drag = true;
+                let marker = L.marker([lat, long], { draggable: drag }, {
                     icon: L.AwesomeMarkers.icon(
-                        { icon: 'check-circle', prefix: 'fa', markerColor: 'blue', iconColor: 'white', spin: false})
+                        { icon: 'check-circle', prefix: 'fa', markerColor: 'blue', iconColor: 'white', spin: false })
                 }).bindPopup('Ubicación Actual').addTo(map);
                 map.flyTo([lat, long], 12);
                 marcadorActivo = marker;
@@ -63,50 +67,93 @@ function descargaImagen(nombre) {
 
 //Botón volver al mapa
 document.getElementById("botVolver").addEventListener("click", function () {
+    //Reiniciamos el valor de la variable de sesión
+    window.sessionStorage.removeItem('modo');
     window.location.href = "/mapas/mapa";
 });
 
 
-//Botón actualizar  //---------------------------------------------------------------------------------------------
+//Evento del botón actualizar ubicación
 if (document.getElementById("botUpdate")) {
     document.getElementById("botUpdate").addEventListener("click", function () {
-            //window.location.href = `/mapas/actualizar/${idUbicacion}`;
-            const formData = new FormData();
-            formData.append("titulo", document.getElementById("inputTitulo").value);
-            formData.append("fecha_foto", document.getElementById("inputFechaFoto").value);
-            formData.append("tipo_fotografia", document.getElementById("inputTipoFoto").value);
-            formData.append("direccion", document.getElementById("inputDireccion").value);
-            formData.append("acceso", document.getElementById("inputAcceso").value);
-            formData.append("latitud", marcadorActivo.getLatLng().lat);
-            formData.append("longitud", marcadorActivo.getLatLng().lng);
-            
 
-            const url = `/mapas/actualizar/${idUbicacion}`;
-            fetch(url, {
-                method: 'PUT',
-                body: formData
+        const formData = new FormData();
+        formData.append("titulo", document.getElementById("inputTitulo").value);
+        formData.append("fecha_foto", document.getElementById("inputFechaFoto").value);
+        formData.append("tipo_fotografia", document.getElementById("inputTipoFoto").value);
+        formData.append("direccion", document.getElementById("inputDireccion").value);
+        formData.append("acceso", document.getElementById("inputAcceso").value);
+        formData.append("latitud", marcadorActivo.getLatLng().lat);
+        formData.append("longitud", marcadorActivo.getLatLng().lng);
+
+        //Pasamos la ubicacion por parametros y el resto de datos el el body con el formData
+        const url = `/mapas/actualizar/${idUbicacion}`;
+        fetch(url, {
+            method: 'PUT',
+            body: formData
+        })
+            .then(res => res.json())
+            .then(res => {
+                Swal.fire({
+                    title: 'Actualización',
+                    text: "Ubicación actualizada correctamente",
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                }).then((result) => {
+                    if (result.value) {
+                        //Reinicializamos la variable de entorno 'modo' y volvemos al mapa
+                        sessionStorage.removeItem('modo');
+                        window.location.href = ('/mapas/mapa');
+                    }
+                });
             })
-                .then(res => res.json())
-                .then(res => {
-                    console.log(res);
-                    
+            .catch(err => {
+                Swal.fire({
+                    title: 'Actualización',
+                    text: "Se ha producido un error al actualizar. " + err,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
                 })
-                .catch(err =>{
-
-                })
+            })
     });
 }
 
-//Botón eliminar    //---------------------------------------------------------------------------------------------
+//Evento botón eliminar ubicación
 if (document.getElementById("botDelete")) {
     document.getElementById("botDelete").addEventListener("click", function () {
-        //window.location.href = `/mapas/eliminar/${idUbicacion}`;
+        const url = `/mapas/eliminar/${idUbicacion}`;
+        fetch(url, {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then(res => {
+                Swal.fire({
+                    title: 'Eliminar',
+                    text: "Ubicación eliminada correctamente",
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                }).then((result) => {
+                    if (result.value) {
+                        //Reinicializamos la variable de entorno 'modo' y volvemos al mapa
+                        sessionStorage.removeItem('modo');
+                        window.location.href = ('/mapas/mapa');
+                    }
+                });
+            })
+            .catch(err => {
+                Swal.fire({
+                    title: 'Eliminar',
+                    text: "Se ha producido un error al eliminar. " + err,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                })
+            })
     });
 }
 
 
 
-// //Añadimos los datos exif
+//Mostramos los datos exif de la foto (No se guardan en BBDD porque permaneceran en la imagen)
 document.getElementById('botExif').onclick = function () {
 
     let img1 = document.getElementById("img");  //Capturamos la imagen subida
@@ -161,7 +208,12 @@ document.getElementById('botExif').onclick = function () {
                 });
 
             } else {
-                Swal.fire('La imagen no contiene datos EXIF');
+                Swal.fire({
+                    title: 'Datos EXIF',
+                    text: "La imagen no contiene datos EXIF",
+                    icon: 'info',
+                    confirmButtonText: 'Ok'
+                });
             }
         })
     }

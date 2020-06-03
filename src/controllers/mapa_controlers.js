@@ -2,12 +2,13 @@
 //Creamos un objeto controlador
 const mapaCtrl = {};
 const Punto = require('../models/Punto');
+const fs = require('fs');
 
 let usuarioActual = "";
 
 //Funcion para renderizar el mapa al iniciar sesion
 mapaCtrl.renderMapa = (req, res) => {
-  
+
   usuarioActual = req.user.name;
   let puntos = Punto.find(function (err, puntos) {
     if (err) return console.error(err);
@@ -47,7 +48,7 @@ mapaCtrl.renderNuevo = (req, res) => {
   res.render('mapas/nuevo');
 };
 
-// //Subir imagen
+//Validadión y guardado de datos de nuevo suministro
 mapaCtrl.upload = async (req, res) => {
   //Almacenamos los datos recibidos
   const {
@@ -60,11 +61,16 @@ mapaCtrl.upload = async (req, res) => {
     latitud,
     longitud,
   } = req.body;
-  
+
   //Almacenamos la imagen
   const {
     imagen
   } = req.files;
+
+  //En caso de validar la imagen, nos retorna un array con el nombre del archivo y la ruta absoluta en BBDD
+  const archivoGuardado = validaImagen(imagen, titulo);
+  let nombreArchivo = archivoGuardado[0];
+  let rutaArchivo = archivoGuardado[1];
 
   //Validamos los datos recibidos
   let errores = [];
@@ -87,28 +93,6 @@ mapaCtrl.upload = async (req, res) => {
     errores.push('No se ha indicado el acceso a la ubicación');
   };
 
-  //Procesamos la imagen
-  let rutaAbsoluta; //Nombre final de la imagen que guardaremos en storage
-  let nombreArchivo;
-  //Tamaño máximo permitido de archivos 3Mb
-  const tamMaximo = 3000000; 
-
-  //Validamos que existe imagen y no supera el tamaño maximo permitido
-  if (!imagen || imagen.size >tamMaximo) {
-    errores.push('No existe imagen para subir o su tamaño es incorrecto');
-  } else {
-    let archivoSubido = imagen;
-    let ruta = 'src/storage/';
-    let moment= Date.now();
-    nombreArchivo = moment + titulo + '.jpg'; 
-    rutaAbsoluta = ruta + nombreArchivo;
-    archivoSubido.mv(rutaAbsoluta, function (err) {
-      if (err) {
-        errores.push(err);
-      }
-    })
-  };
-
   //Si no hay errores, guardamos la ubicación en BBDD
   if (!errores.length) {
     //Tratamos los datos recibidos
@@ -122,6 +106,7 @@ mapaCtrl.upload = async (req, res) => {
         fecha_foto,
         coordenadas: [latitud, longitud],
         imagen: nombreArchivo,
+        rutaImagen: rutaArchivo,
         visitas: 0
       });
 
@@ -136,55 +121,91 @@ mapaCtrl.upload = async (req, res) => {
   }
 };
 
+//Validación y guardado de imagen
+function validaImagen(imagen, titulo){
+  let rutaAbsoluta; //Nombre final de la imagen que guardaremos en storage
+  let nombreArchivo;
+  //Tamaño máximo permitido de archivos 3Mb
+  const tamMaximo = 3000000;
+
+  //Validamos que existe imagen y no supera el tamaño maximo permitido
+  if (!imagen || imagen.size > tamMaximo) {
+    errores.push('No existe imagen para subir o su tamaño es incorrecto');
+  } else {
+    let archivoSubido = imagen;
+    let ruta = 'src/storage/';
+    let moment = Date.now();
+    nombreArchivo = moment + titulo + '.jpg';
+    rutaAbsoluta = ruta + nombreArchivo;
+    archivoSubido.mv(rutaAbsoluta, function (err) {
+      if (err) {
+        errores.push(err);
+      }
+    })
+    return [nombreArchivo, rutaAbsoluta];
+  };
+}
+
 //Obtenemos la imagen guardada en la carpeta de imagenes y con el nombre recibido por parametros
 mapaCtrl.getImage = (req, res) => {
   let img = req.params.name;
-  res.sendFile('/storage/'+ img, {root: 'src'});
+  res.sendFile('/storage/' + img, { root: 'src' });
 };
 
 //Renderizamos la vista para ver el detalle de una ubicación
-mapaCtrl.verDetalle = (req, res) =>{
-    let id = req.params.id;
-    res.render('mapas/detalle', {normal: true, id});
+mapaCtrl.verDetalle = (req, res) => {
+  let id = req.params.id;
+  res.render('mapas/detalle', { normal: true, id });
 };
 
 //Renderizamos la vista para editar de una ubicación
-mapaCtrl.editarUbicacion = (req, res) =>{
+mapaCtrl.editarUbicacion = (req, res) => {
   let id = req.params.id;
-  res.render('mapas/detalle', {edit: true, id});
+  res.render('mapas/detalle', { edit: true, id });
 };
 
 //Renderizamos la vista para eliminar de una ubicación
-mapaCtrl.eliminarUbicacion = (req, res) =>{
+mapaCtrl.eliminarUbicacion = (req, res) => {
   let id = req.params.id;
-  res.render('mapas/detalle', {delete: true, id});
+  res.render('mapas/detalle', { delete: true, id });
 };
 
-mapaCtrl.actualizarEnBBDD = (req, res) =>{
-let id=req.params.id;
-let titulo = req.body.titulo;
-let fecha_foto = req.body.fecha_foto;
-let tipo_fotografia = req.body.tipo_fotografia;
-let direccion = req.body.direccion;
-let acceso = req.body.acceso;
-let latitud = req.body.latitud;
-let longitud = req.body.longitud;
-let coordenadas = [latitud, longitud];
+mapaCtrl.actualizarEnBBDD = (req, res) => {
+  let id = req.params.id;
+  let titulo = req.body.titulo;
+  let fecha_foto = req.body.fecha_foto;
+  let tipo_fotografia = req.body.tipo_fotografia;
+  let direccion = req.body.direccion;
+  let acceso = req.body.acceso;
+  let latitud = req.body.latitud;
+  let longitud = req.body.longitud;
+  let coordenadas = [latitud, longitud];
 
-Punto.findOneAndUpdate({ _id: id }, {titulo, fecha_foto, tipo_fotografia, direccion, acceso, coordenadas}, {new: true}, function (err, resultado) {
-  if (err) return console.error(err);
-res.send(resultado);
-})
+  Punto.findOneAndUpdate({ _id: id }, { titulo, fecha_foto, tipo_fotografia, direccion, acceso, coordenadas }, { new: true }, function (err, resultado) {
+    if (err) return console.error(err);
+    res.send(resultado);
+  })
 
 };
 
-mapaCtrl.eliminarEnBBDD = (req, res) =>{
-
+mapaCtrl.eliminarEnBBDD = (req, res) => {
+  let id = req.params.id;
+  Punto.findOneAndDelete({ _id: id }, function (err, resultado) {
+    if (err) return console.error(err);
+    
+    //Eliminamos del servidor la imagen asociada a la ubicación
+    //recuperando la ruta de la imagen
+    let ruta = resultado.rutaImagen;
+    fs.unlink(ruta, function (err, ok) {
+      if (err)  return console.error(err);
+      res.send(resultado);
+    })
+  });
 };
 
 
 //Recupera de la BBDD todos los datos del elemento identificado por su _id
-mapaCtrl.datosDetalle = (req, res) =>{
+mapaCtrl.datosDetalle = (req, res) => {
   let id = req.params.id;
   Punto.find({ _id: id }, function (err, puntos) {
     if (err) return console.error(err);

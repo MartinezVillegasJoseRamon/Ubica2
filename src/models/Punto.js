@@ -8,6 +8,7 @@ const PuntoSchema = new Schema({
     titulo: {type:String, required: true},
     coordenadas: {type:[Number], required: true},
     imagen: {type:String, required: true},
+    rutaImagen: {type:String},
     autor: {type:String},
     direccion: {type:String},
     acceso: {type:String},

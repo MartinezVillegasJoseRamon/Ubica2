@@ -287,8 +287,7 @@ function markerClick(e, elem, photo) {
         .setContent(container)
         .openOn(map);
 
-    //Reiniciamos el valor de la variable
-    window.sessionStorage.removeItem('modo');
+
 };
 
 //Definimos el botón del popup
