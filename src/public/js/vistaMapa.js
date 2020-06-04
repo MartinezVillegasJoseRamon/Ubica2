@@ -92,33 +92,34 @@ function cargaThumbnail() {
 
     //Tamaño máximo permitido de archivos 3Mb
     const tamMaximo = 3000000;
+    if (document.getElementById('inputSubirImagen')) {
+        document.getElementById('inputSubirImagen').onchange = function (evt) {
+            var tgt = evt.target || window.event.srcElement,
+                files = tgt.files;
 
-    document.getElementById('inputSubirImagen').onchange = function (evt) {
-        var tgt = evt.target || window.event.srcElement,
-            files = tgt.files;
-
-        // FileReader
-        if (FileReader && files && files.length) {
-            //Si el tamaño supera el maximo permitido no se procesa
-            if (tgt.files[0].size > tamMaximo) {
-                Swal.fire({
-                    title: "Tamaño de imagen",
-                    icon: 'error',
-                    text: 'El tamaño de la imagen supera el máximo permitido de 3Mb, por favor, reduce el tamaño de la foto.' +
-                        ' El tamaño actual de su foto es de ' + ((tgt.files[0].size) / 1000000).toFixed(2) + ' Mb',
-                    confirmButtonText: "Ok",
-                })
-            } else {
-                var fr = new FileReader();
-                fr.onload = function () {   //Evento que se activa cuando la lectura es correcta
-                    // Actualiza la imagen y hace que se vea en la web la preselección
-                    document.getElementById('imagenThumbnail').src = fr.result;
-                    if (tgt.files && tgt.files.length) {
-                        // Actualiza el label del input para mostrar el nombre de la imagen seleccionada
-                        document.getElementById('labelInputSubirImagen').innerHTML = tgt.files[0].name;
+            // FileReader
+            if (FileReader && files && files.length) {
+                //Si el tamaño supera el maximo permitido no se procesa
+                if (tgt.files[0].size > tamMaximo) {
+                    Swal.fire({
+                        title: "Tamaño de imagen",
+                        icon: 'error',
+                        text: 'El tamaño de la imagen supera el máximo permitido de 3Mb, por favor, reduce el tamaño de la foto.' +
+                            ' El tamaño actual de su foto es de ' + ((tgt.files[0].size) / 1000000).toFixed(2) + ' Mb',
+                        confirmButtonText: "Ok",
+                    })
+                } else {
+                    var fr = new FileReader();
+                    fr.onload = function () {   //Evento que se activa cuando la lectura es correcta
+                        // Actualiza la imagen y hace que se vea en la web la preselección
+                        document.getElementById('imagenThumbnail').src = fr.result;
+                        if (tgt.files && tgt.files.length) {
+                            // Actualiza el label del input para mostrar el nombre de la imagen seleccionada
+                            document.getElementById('labelInputSubirImagen').innerHTML = tgt.files[0].name;
+                        }
                     }
+                    fr.readAsDataURL(files[0]);
                 }
-                fr.readAsDataURL(files[0]);
             }
         }
     }
@@ -258,23 +259,23 @@ function markerClick(e, elem, photo) {
     //En función del modo mostramos un valor distinto en el boton del popup
     //La ruta cambia en función del modo para ejecutar una funcion distinta en el servidor
     if (!modo) {
-        botVer = createButton('Ver detalles', container);
-            //Evento del botón del popup de cada marcador en modo normal
-            L.DomEvent.on(botVer, 'click', () => {
+        botVer = createButton('Ver detalles', container, 'btn btn-success btn-block');
+        //Evento del botón del popup de cada marcador en modo normal
+        L.DomEvent.on(botVer, 'click', () => {
             window.location.href = `/mapas/detalle/${idUbicacion}`;
         });
     }
     else if (modo === 'edit') {
-        botVer = createButton('Ver ubicación para editar', container);
-            //Evento del botón del popup de cada marcador en modo normal
-            L.DomEvent.on(botVer, 'click', () => {
+        botVer = createButton('Ver ubicación para editar', container, 'btn btn-warning btn-block');
+        //Evento del botón del popup de cada marcador en modo normal
+        L.DomEvent.on(botVer, 'click', () => {
             window.location.href = `/mapas/edit/${idUbicacion}`;
         });
     }
     else if (modo === 'delete') {
-        botVer = createButton('Ver ubicación para eliminar', container);
-            //Evento del botón del popup de cada marcador en modo normal
-            L.DomEvent.on(botVer, 'click', () => {
+        botVer = createButton('Ver ubicación para eliminar', container, 'btn btn-danger btn-block');
+        //Evento del botón del popup de cada marcador en modo normal
+        L.DomEvent.on(botVer, 'click', () => {
             window.location.href = `/mapas/delete/${idUbicacion}`;
         });
     }
@@ -291,8 +292,8 @@ function markerClick(e, elem, photo) {
 };
 
 //Definimos el botón del popup
-function createButton(label, container) {
-    var btn = L.DomUtil.create('button', 'btn btn-success btn-block', container);
+function createButton(label, container, tipo) {
+    var btn = L.DomUtil.create('button', tipo, container);
     btn.setAttribute('type', 'button');
     btn.innerHTML = label;
     return btn;

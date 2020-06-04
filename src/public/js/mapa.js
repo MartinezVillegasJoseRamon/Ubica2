@@ -12,6 +12,7 @@ cargaDatos('/mapas/mapa/datos');
 //Evento para boton todas las ubicaciones
 document.getElementById("ver_todas").onclick = function () {
     eliminaMarcadores();
+    window.sessionStorage.clear('modo');
     document.getElementById("tipo_foto").value='Tipo de foto';
     cargaDatos('/mapas/mapa/datos');
 };
@@ -44,6 +45,7 @@ document.getElementById("edit").onclick = function () {
     //Mostramos solo las ubicaciones del usuario, que son las únicas que puede editar
     //y establecemos el modo en edit
     window.sessionStorage.setItem('modo','edit');
+    document.getElementById('map').style.cursor.fontcolor('black');
     verMisUbicaciones();
     Swal.fire({
         title: 'Editar',

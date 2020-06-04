@@ -1,45 +1,47 @@
-
-<div class="container-fluid px-0">
-    <div class="row">
-        <div class="container col-lg-9 mt-3">
-            <img class="img-fluid d-block mx-auto" id="img" style="max-height: 85vh" id="imagenThumbnail" src="/img/Logo.png"
-                alt="Imagen subida">
-        </div>
-        <div class="container col-lg-3 mt-3">
-            <p class=" h3 text-align-center">
-                {{!-- Establecemos el titulo en función del modo de trabajo, visualización, edición o eliminación --}}
-                {{#if edit}}Editar ubicación
-                    {{else}}
-                        {{#if delete}}Eliminar ubicación
-                            {{else}}Propiedades de la ubicación
-                        {{/if}}
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="container col-lg-9 mt-3">
+                {{#if edit}}
+                <div class="custom-file bg-white">
+                    <label class="custom-file-label" for="inputSubirImagen" id="labelInputSubirImagen">Elegir archivo
+                        (Tamaño max. 3Mb)</label>
+                    <input type="file" class="custom-file-input my-2" id="inputSubirImagen" accept=".jpeg, .jpg"
+                        name="imagen" placeholder="Modificar imagen">
+                </div>
                 {{/if}}
-            </p>
-            <div class="input-group my-1 mt-3">
-                <span class="input-group-text">Autor</span>
-                <input type="text" class="form-control" id="inputAutor" aria-label="autor"
-                    aria-describedby="basic-addon1" disabled>
+                <img class="img-fluid d-block mx-auto mt-2" id="imagenThumbnail" style="max-height: 75vh"
+                    id="imagenThumbnail" src="/img/Logo.png" alt="Imagen subida">
+            </div>
+            <div class="container col-lg-3 mt-3">
+                <p class=" h3 text-align-center">
+                    {{!-- Establecemos el titulo en función del modo de trabajo, visualización, edición o eliminación --}}
+                    {{#if edit}}Editar ubicación
+                    {{else}}
+                    {{#if delete}}Eliminar ubicación
+                    {{else}}Propiedades de la ubicación
+                    {{/if}}
+                    {{/if}}
+                </p>
+                <div class="input-group my-1 mt-3">
+                    <span class="input-group-text">Autor</span>
+                    <input type="text" class="form-control" id="inputAutor" aria-label="autor"
+                        aria-describedby="basic-addon1" disabled>
 
-            </div>
-            <div class="input-group my-1">
-                <span class="input-group-text">Titulo</span>
-                <input type="text" class="form-control" id="inputTitulo" aria-label="titulo"
-                    aria-describedby="basic-addon1" 
-                    {{#if edit}}enabled
-                    {{else}}disabled {{/if}}>
-            </div>
-            <div class="input-group my-1">
-                <span class="input-group-text">Fecha foto</span>
-                <input type="date" class="form-control" id="inputFechaFoto" aria-label="fecha_foto"
-                    aria-describedby="basic-addon1" 
-                    {{#if edit}}enabled
-                    {{else}}disabled {{/if}}>
-            </div>
-            <div class="input-group my-1">
-                <span class="input-group-text">Tipo de foto</span>
-                     <select id="inputTipoFoto" class="form-control" name="tipo_fotografia" required  
-                    {{#if edit}}enabled
-                    {{else}}disabled {{/if}}>
+                </div>
+                <div class="input-group my-1">
+                    <span class="input-group-text">Titulo</span>
+                    <input type="text" class="form-control" id="inputTitulo" aria-label="titulo"
+                        aria-describedby="basic-addon1" {{#if edit}}enabled {{else}}disabled {{/if}}>
+                </div>
+                <div class="input-group my-1">
+                    <span class="input-group-text">Fecha foto</span>
+                    <input type="date" class="form-control" id="inputFechaFoto" aria-label="fecha_foto"
+                        aria-describedby="basic-addon1" {{#if edit}}enabled {{else}}disabled {{/if}}>
+                </div>
+                <div class="input-group my-1">
+                    <span class="input-group-text">Tipo de foto</span>
+                    <select id="inputTipoFoto" class="form-control" name="tipo_fotografia" required {{#if edit}}enabled
+                        {{else}}disabled {{/if}}>
                         <option value="paisaje">Paisaje</option>
                         <option value="macro">Macro</option>
                         <option value="nocturna">Nocturna</option>
@@ -49,45 +51,43 @@
                         <option value="costa">Costa</option>
                         <option value="todas">Todas</option>
                     </select>
-            </div>
-            <div class="input-group my-1">
-                <span class="input-group-text">Dirección</span>
-                <input type="text" class="form-control" id="inputDireccion" aria-label="direccion"
-                    aria-describedby="basic-addon1" 
-                    {{#if edit}}enabled
-                    {{else}}disabled {{/if}}>
-            </div>
-            <div class="input-group my-1">
-                <span class="input-group-text">Acceso</span>
-                <textarea type="text" class="form-control textarea" id="inputAcceso" 
-                    {{#if edit}}enabled
-                    {{else}}disabled {{/if}}>
+                </div>
+                <div class="input-group my-1">
+                    <span class="input-group-text">Dirección</span>
+                    <input type="text" class="form-control" id="inputDireccion" aria-label="direccion"
+                        aria-describedby="basic-addon1" {{#if edit}}enabled {{else}}disabled {{/if}}>
+                </div>
+                <div class="input-group my-1">
+                    <span class="input-group-text">Acceso</span>
+                    <textarea type="text" class="form-control textarea" id="inputAcceso" {{#if edit}}enabled
+                        {{else}}disabled {{/if}}>
                 </textarea>
-            </div>
-            <div class="container-fluid">
-                <input type="button" id="botExif" class="btn btn-dark mx-auto my-2" value="Ver datos EXIF"/>
-                <input type="button" id="botVolver" class="btn btn-success mx-auto my-2" value="Volver"/>
-                {{!-- Si estamos en modo edición mostramos el boton actualizar --}}
-                {{#if edit}}
-                    <input type="button" id="botUpdate" class="btn btn-warning mx-auto my-2" value="Actualizar"/>
-                {{/if}}
+                </div>
+                <div class="container-fluid">
+                    <input type="button" id="botExif" class="btn btn-dark mx-auto my-2" value="Ver datos EXIF" />
+                    <input type="button" id="botVolver" class="btn btn-success mx-auto my-2" value="Volver" />
+                    {{!-- Si estamos en modo edición mostramos el boton actualizar --}}
+                    {{#if edit}}
+                    <input type="button" id="botUpdate" class="btn btn-warning mx-auto my-2" value="Actualizar" />
+                    {{/if}}
 
-                {{!-- Si estamos en modo eliminación mostramos el boton eliminar --}}
-                {{#if delete}}
-                    <input type="button" id="botDelete" class="btn btn-danger mx-auto my-2" value="Eliminar"/>
-                {{/if}}
-            </div>
-            <div class="container-fluid bg-success" id="map" style="height: 40vh;">
-                
+                    {{!-- Si estamos en modo eliminación mostramos el boton eliminar --}}
+                    {{#if delete}}
+                    <input type="button" id="botDelete" class="btn btn-danger mx-auto my-2" value="Eliminar" />
+                    {{/if}}
+                </div>
+                <div class="container-fluid bg-success" id="map" style="height: 40vh;">
+
+                </div>
             </div>
         </div>
     </div>
-</div>
+
 
 {{!-- Script para mapa --}}
 <script src="/js/vistaMapa.js"></script>
 
 <script src="/js/detalle.js"></script>
 
-{{!-- Script para extraer datos EXIF de la foto --}} 
-<script src="https://unpkg.com/exif-js@2.3.0"></script> 
+{{!-- Script para extraer datos EXIF de la foto --}}
+<script src="https://unpkg.com/exif-js@2.3.0"></script>

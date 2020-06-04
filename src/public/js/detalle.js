@@ -5,6 +5,8 @@ cargaMapaInicial();
 //Creamos el marcador con "mi localización"
 miLocalizacion();
 
+//Mostramos en el thumbnail la imagen cargada
+cargaThumbnail();
 
 //Descargamos los datos de la ubicación
 let idUbicacion = window.sessionStorage.getItem('idUbicacion');
@@ -37,7 +39,7 @@ function descargaDatos(url) {
                 document.getElementById("inputDireccion").value = res[0].direccion;
                 document.getElementById("inputAcceso").value = res[0].acceso;
                 document.getElementById("inputAutor").value = res[0].autor;
-                document.getElementById("inputAutor").value = res[0].autor;
+
                 //Dibujamos el marcador en las coordenadas del punto actual
                 let lat = res[0].coordenadas[0];
                 let long = res[0].coordenadas[1];
@@ -62,7 +64,7 @@ function descargaDatos(url) {
 //Funcion para descargar imagen de la ubicación
 function descargaImagen(nombre) {
     let imagen = ('/mapas/img/' + nombre);
-    document.getElementById("img").src = imagen;
+    document.getElementById("imagenThumbnail").src = imagen;
 };
 
 //Botón volver al mapa
@@ -76,7 +78,7 @@ document.getElementById("botVolver").addEventListener("click", function () {
 //Evento del botón actualizar ubicación
 if (document.getElementById("botUpdate")) {
     document.getElementById("botUpdate").addEventListener("click", function () {
-
+        
         const formData = new FormData();
         formData.append("titulo", document.getElementById("inputTitulo").value);
         formData.append("fecha_foto", document.getElementById("inputFechaFoto").value);
@@ -85,12 +87,13 @@ if (document.getElementById("botUpdate")) {
         formData.append("acceso", document.getElementById("inputAcceso").value);
         formData.append("latitud", marcadorActivo.getLatLng().lat);
         formData.append("longitud", marcadorActivo.getLatLng().lng);
+        formData.append("imagen", document.getElementById('inputSubirImagen').files[0]);
 
         //Pasamos la ubicacion por parametros y el resto de datos el el body con el formData
         const url = `/mapas/actualizar/${idUbicacion}`;
         fetch(url, {
             method: 'PUT',
-            body: formData
+            body: formData,
         })
             .then(res => res.json())
             .then(res => {
