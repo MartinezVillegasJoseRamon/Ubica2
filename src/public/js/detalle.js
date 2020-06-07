@@ -39,6 +39,11 @@ function descargaDatos(url) {
                 document.getElementById("inputDireccion").value = res[0].direccion;
                 document.getElementById("inputAcceso").value = res[0].acceso;
                 document.getElementById("inputAutor").value = res[0].autor;
+                if(document.getElementById("labelInputSubirImagen")){
+                    document.getElementById("labelInputSubirImagen").innerText = res[0].imagen;
+                }
+                
+
 
                 //Dibujamos el marcador en las coordenadas del punto actual
                 let lat = res[0].coordenadas[0];
@@ -88,12 +93,17 @@ if (document.getElementById("botUpdate")) {
         formData.append("latitud", marcadorActivo.getLatLng().lat);
         formData.append("longitud", marcadorActivo.getLatLng().lng);
         formData.append("imagen", document.getElementById('inputSubirImagen').files[0]);
+        if(window.sessionStorage.getItem('Latitud') && window.sessionStorage.getItem('longitud')){
+            formData.append("latitud", window.sessionStorage.getItem('Latitud'));
+            formData.append("longitud", window.sessionStorage.getItem('Longitud'));
+        };
+
 
         //Pasamos la ubicacion por parametros y el resto de datos el el body con el formData
         const url = `/mapas/actualizar/${idUbicacion}`;
         fetch(url, {
             method: 'PUT',
-            body: formData,
+            body: formData
         })
             .then(res => res.json())
             .then(res => {
@@ -159,7 +169,7 @@ if (document.getElementById("botDelete")) {
 //Mostramos los datos exif de la foto (No se guardan en BBDD porque permaneceran en la imagen)
 document.getElementById('botExif').onclick = function () {
 
-    let img1 = document.getElementById("img");  //Capturamos la imagen subida
+    let img1 = document.getElementById("imagenThumbnail");  //Capturamos la imagen subida
     let data;
     img1.exifdata = null;
     if (img1.src.substr(-9) != "noimg.jpg") {

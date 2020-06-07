@@ -49,33 +49,12 @@ mapaCtrl.renderNuevo = (req, res) => {
   res.render('mapas/nuevo');
 };
 
-//Validación y guardado de imagen
-function validaImagen(imagen, titulo) {
-  let rutaAbsoluta; //Nombre final de la imagen que guardaremos en storage
-  let nombreArchivo;
-  //Tamaño máximo permitido de archivos 3Mb
-  const tamMaximo = 3000000;
 
-  //Validamos que existe imagen y no supera el tamaño maximo permitido
-  if (!imagen || imagen.size > tamMaximo) {
-    errores.push('No existe imagen para subir o su tamaño es incorrecto');
-  } else {
-    let archivoSubido = imagen;
-    let ruta = 'src/storage/';
-    let moment = Date.now();
-    nombreArchivo = moment + titulo + '.jpg';
-    rutaAbsoluta = ruta + nombreArchivo;
-    archivoSubido.mv(rutaAbsoluta, function (err) {
-      if (err) {
-        errores.push(err);
-      }
-    })
-    return [nombreArchivo, rutaAbsoluta];
-  };
-}
 
 //Validadión y guardado de datos de nuevo suministro
 mapaCtrl.upload = async (req, res) => {
+  let nombreArchivo;
+  let rutaArchivo;
   //Almacenamos los datos recibidos
   const {
     autor,
@@ -93,13 +72,16 @@ mapaCtrl.upload = async (req, res) => {
     imagen
   } = req.files;
 
-  //En caso de validar la imagen, nos retorna un array con el nombre del archivo y la ruta absoluta en BBDD
-  const archivoGuardado = validaImagen(imagen, titulo);
-  let nombreArchivo = archivoGuardado[0];
-  let rutaArchivo = archivoGuardado[1];
+  //Llamamos a la funcion validaImagen que nos devuelve una promesa
+  try{
+    const respuesta = await validaImagen(imagen, titulo);
+    nombreArchivo = respuesta[0];
+    rutaArchivo = respuesta[1];
+  }catch (err){
+    errores.push(err);
+  };
 
   //Validamos los datos recibidos
-
   if (latitud < -90 || latitud > 90) {
     errores.push('Latitud fuera de rango. Los valores deben estár comprendidos entre -90 y +90');
   };
@@ -174,27 +156,39 @@ mapaCtrl.eliminarUbicacion = (req, res) => {
 };
 
 mapaCtrl.actualizarEnBBDD = async (req, res) => {
-    //Almacenamos los datos recibidos
+  //Almacenamos los datos recibidos en variables
   let id = req.params.id;
+  let imagen;
+  let nombreArchivo;
+  let rutaArchivo;
+
+  //Definimos las variables del objeto
   const {
-    titulo_foto,
-    tipo_fotografia,
     titulo,
+    tipo_fotografia,
     direccion,
     acceso,
     fecha_foto,
     latitud,
-    longitud,
+    longitud
   } = req.body;
 
-  //Almacenamos la imagen
-  let imagen = req.files;
-
-  //En caso de validar la imagen, nos retorna un array con el nombre del archivo y la ruta absoluta en BBDD
-  if (imagen) {
-      const archivoGuardado = validaImagen(imagen, titulo);
-    let nombreArchivo = archivoGuardado[0];
-    let rutaArchivo = archivoGuardado[1];
+  //Almacenamos la imagen si a cambiado
+  if (req.files) {
+    imagen = req.files.imagen;
+      //Llamamos a la funcion validaImagen que nos devuelve una promesa
+      try {
+        const respuesta = await validaImagen(imagen, titulo);
+        nombreArchivo = respuesta[0];
+        rutaArchivo = respuesta[1];
+      }catch (err){
+        errores.push(err);
+      }
+  } else {
+    //Si no hemos actualizado el archivo, mantenemos los datos que hay en BBDD
+    const old = await Punto.findById(id);
+    nombreArchivo = old.imagen;
+    rutaArchivo = old.rutaImagen;
   }
 
   //Validamos los datos recibidos
@@ -207,7 +201,7 @@ mapaCtrl.actualizarEnBBDD = async (req, res) => {
   if (!tipo_fotografia) {
     errores.push('No se ha indicado el tipo de fotografia');
   };
-  if (!titulo_foto) {
+  if (!titulo) {
     errores.push('No se ha indicado el titulo');
   };
   if (!acceso) {
@@ -217,35 +211,37 @@ mapaCtrl.actualizarEnBBDD = async (req, res) => {
   //Si no hay errores, guardamos la ubicación en BBDD
   if (!errores.length) {
     //Tratamos los datos recibidos
-    try {
-      const actualizaUbicacion = Punto({
+    let coordenadas = [latitud, longitud];
+    //Almacenamos la referencia a la antigua imagen
+    const oldImage = await Punto.findById(id);
+
+    //Actualizamos la Ubicación con los nuevos datos
+    const puntoActualizado = await Punto.findOneAndUpdate({ _id: id },
+      {
         tipo_fotografia,
-        titulo_foto,
+        titulo,
         direccion,
         acceso,
         fecha_foto,
-        coordenadas: [latitud, longitud],
+        latitud,
+        longitud,
         imagen: nombreArchivo,
-        rutaImagen: rutaArchivo,
-        visitas: 0
-      });
-      const puntoActualizado = await Punto.findOneAndUpdate({ _id: id }, { titulo_foto, fecha_foto, tipo_fotografia, direccion, acceso, coordenadas, rutaImagen });
-
-      res.status(200).json({ message: 'ok' });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-
-  } else {  //En caso de existir errores, los devolvemos
+        rutaImagen: rutaArchivo
+      }, function (err, resultado) {
+        if (err) res.status(500).json({ message: error.message });
+        
+        //Eliminamos la imagen antigua
+        let ruta = oldImage.rutaImagen;
+        fs.unlink(ruta, function (errDevuelto, ok){
+          if(errDevuelto) console.log(errDevuelto);
+          res.status(200).json({ message: 'ok' });
+        })
+        
+      })
+  } else {  //En caso de existir errores, los devolvemos al cliente
     res.status(500).json({ message: errores });
   }
 };
-
-
-
-
-
-
 
 mapaCtrl.eliminarEnBBDD = (req, res) => {
   let id = req.params.id;
@@ -272,5 +268,35 @@ mapaCtrl.datosDetalle = (req, res) => {
   })
 };
 
+//Validación y guardado de imagen
+function validaImagen(imagen, titulo) {
+  let rutaAbsoluta; //Nombre final de la imagen que guardaremos en storage
+  let nombreArchivo;
+  //Tamaño máximo permitido de archivos 3Mb
+  const tamMaximo = 3000000;
+  //Definimos la promesa
+  return new Promise(function (res, rej) {
+    //Validamos que existe imagen y no supera el tamaño maximo permitido
+    //Si da error devolvemos un reject con el mensaje de error
+    if (!imagen || imagen.size > tamMaximo) {
+      rej('No existe imagen para subir o su tamaño es incorrecto');
+      return;
+    }
+    else {
+      let archivoSubido = imagen;
+      let ruta = 'src/storage/';
+      let moment = Date.now();
+      nombreArchivo = moment + titulo + '.jpg';
+      rutaAbsoluta = ruta + nombreArchivo;
+      archivoSubido.mv(rutaAbsoluta, function (err, file) {
+        if (err) {
+          return rej(err);
+        }
+        return res([nombreArchivo, rutaAbsoluta]);
+      });
+    }
+
+  })  //Final definición promesa
+} //Fin función
 
 module.exports = mapaCtrl;

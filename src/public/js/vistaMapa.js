@@ -239,7 +239,12 @@ function markerClick(e, elem, photo) {
     let choicePopUp = L.popup();
     //id de la ubicación
     let idUbicacion = elem._id;
+    let latitud = elem.latitude;
+    let longitud = elem.longitude;
     window.sessionStorage.setItem('idUbicacion', idUbicacion);
+    window.sessionStorage.setItem('latitud', latitud);
+    window.sessionStorage.setItem('longitud', longitud);
+
     let modo = window.sessionStorage.getItem('modo');
 
 
