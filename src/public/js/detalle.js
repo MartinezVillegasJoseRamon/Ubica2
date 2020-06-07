@@ -54,7 +54,7 @@ function descargaDatos(url) {
                 let marker = L.marker([lat, long], { draggable: drag }, {
                     icon: L.AwesomeMarkers.icon(
                         { icon: 'check-circle', prefix: 'fa', markerColor: 'blue', iconColor: 'white', spin: false })
-                }).bindPopup('Ubicación Actual').addTo(map);
+                }).bindPopup('<strong>' + 'Ubicación Actual'+ '</strong>' + '<br>' + 'Coordenadas: ' +'<br>'+ lat + '<br>' + long).addTo(map);
                 map.flyTo([lat, long], 12);
                 marcadorActivo = marker;
                 //Descargamos la imagen correspondiente al punto

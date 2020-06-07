@@ -13,6 +13,8 @@ cargaDatos('/mapas/mapa/datos');
 document.getElementById("ver_todas").onclick = function () {
     eliminaMarcadores();
     window.sessionStorage.clear('modo');
+    document.getElementById('txtModo').className = 'badge badge-pill badge-primary d-block mt-3';
+    document.getElementById('txtModo').innerText='Modo visualización';
     document.getElementById("tipo_foto").value='Tipo de foto';
     cargaDatos('/mapas/mapa/datos');
 };
@@ -45,7 +47,10 @@ document.getElementById("edit").onclick = function () {
     //Mostramos solo las ubicaciones del usuario, que son las únicas que puede editar
     //y establecemos el modo en edit
     window.sessionStorage.setItem('modo','edit');
-    document.getElementById('map').style.cursor.fontcolor('black');
+    document.getElementById('txtModo').className = 'badge badge-pill badge-warning d-block mt-3';
+    document.getElementById('txtModo').innerText='Modo Edición';
+
+    //document.getElementById('map').style.cursor.fontcolor('black');
     verMisUbicaciones();
     Swal.fire({
         title: 'Editar',
@@ -60,6 +65,8 @@ document.getElementById("delete").onclick = function () {
     //Mostramos solo las ubicaciones del usuario, que son las únicas que puede editar
     //y establecemos el modo en delete
     window.sessionStorage.setItem('modo','delete');
+    document.getElementById('txtModo').className = 'badge badge-pill badge-danger d-block mt-3';
+    document.getElementById('txtModo').innerText='Modo Eliminación';
     verMisUbicaciones();
     Swal.fire({
         title: 'Eliminar',
@@ -74,6 +81,8 @@ document.getElementById("tipo_foto").onchange = function (elem) {
     //Mostramos las ubicaciones que coinciden con el tipo de foto seleccionada
     let filtro = elem.target.value;
     eliminaMarcadores();
+    document.getElementById('txtModo').className = 'badge badge-pill badge-primary d-block mt-3';
+    document.getElementById('txtModo').innerText='Modo visualización';
     cargaDatos('/mapas/mapa/datos' + '/?tipo=' + filtro);
 };
 
