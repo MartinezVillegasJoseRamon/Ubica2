@@ -40,7 +40,7 @@ app.set('view engine', '.hbs');
 
 //---------------- Middlewares (funciones que se ejecutan cuando llegan las peticiones)
 
-//Los datos recibidos se codifican como JSON
+//Los datos enviados/recibidos se codifican como JSON y así el servidor sabe interpretarlos
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 

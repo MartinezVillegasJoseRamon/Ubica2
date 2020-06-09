@@ -4,7 +4,7 @@ const router = Router();
 
 //Requerimos las funciones que van a realizar la distintas rutas
 const {renderMapa, todosPuntos, misUbicaciones, renderNuevo, upload, getImage, verDetalle, 
-    datosDetalle, editarUbicacion, eliminarUbicacion, actualizarEnBBDD, eliminarEnBBDD} = require('../controllers/mapa_controlers');
+    datosDetalle, editarUbicacion, eliminarUbicacion, actualizarEnBBDD, eliminarEnBBDD, contacto, envioEmail} = require('../controllers/mapa_controlers');
 
 //Requerimos la funcion creada para verificar si hay un usuario autenticado
 const {isAuthenticated} = require('../helpers/auth');
@@ -46,6 +46,10 @@ router.get('/mapas/detalle/:id', verDetalle);
 //Endpoint para recuperar los datos de detalle
 router.get('/mapas/detalle/:id/ubicacion', datosDetalle);
 
+//Endpoint para renderizar formulario de contacto
+router.get('/mapas/contacto', contacto);
+//Endpoint para renderizar formulario de contacto
+router.post('/mapas/contacto/email', envioEmail);
 
 //Exportamos el modulo para poder ser utilizado por otros procesos
 module.exports = router;

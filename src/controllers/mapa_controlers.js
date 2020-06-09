@@ -3,6 +3,7 @@
 const mapaCtrl = {};
 const Punto = require('../models/Punto');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 
 let usuarioActual = "";
 let errores = [];
@@ -17,6 +18,41 @@ mapaCtrl.renderMapa = (req, res) => {
   });
   res.render('mapas/mapa');
 };
+
+mapaCtrl.contacto = (req, res) => {
+  res.render('contacto');
+}
+
+mapaCtrl.envioEmail = (req, res) => {
+  //Procesamos el email de contacto
+  const { nombre, email, mensaje } = req.body;  //Destructuramos los datos recibidos en el body
+
+  //Creamos un falso envío de correo
+  const transporter = nodemailer.createTransport({
+
+    //Utilizamos un servidor de correo ficticio para pruebas
+    //Una vez puesto en producción utilizaremos una cuenta real
+    host: 'smtp.ethereal.email',
+    port: 587,
+    auth: {
+      user: 'mason.kirlin@ethereal.email',
+      pass: 'aW9pTSVJ36U3ScACeJ'
+    }
+  });
+  const mailOptions = {
+    from: nombre,   //Nombre del remitente
+    to: 'jorama01@gmail.com', //Destinatario del correo
+    subject: email,   //email del remitente
+    text: mensaje     //Mensaje
+  }
+  //Creamos el envío y si existe algún error lo capturamos
+  transporter.sendMail(mailOptions, (error, res) => {
+    if(error){
+      res.status(500).send({error: error.message});
+    }
+  });
+  res.redirect('/');
+}
 
 //Metodo que recupera todos los marcadores de la BBDD y si existe un filtro, solo los filtrados
 mapaCtrl.todosPuntos = (req, res) => {
@@ -73,11 +109,11 @@ mapaCtrl.upload = async (req, res) => {
   } = req.files;
 
   //Llamamos a la funcion validaImagen que nos devuelve una promesa
-  try{
+  try {
     const respuesta = await validaImagen(imagen, titulo);
     nombreArchivo = respuesta[0];
     rutaArchivo = respuesta[1];
-  }catch (err){
+  } catch (err) {
     errores.push(err);
   };
 
@@ -176,14 +212,14 @@ mapaCtrl.actualizarEnBBDD = async (req, res) => {
   //Almacenamos la imagen si a cambiado
   if (req.files) {
     imagen = req.files.imagen;
-      //Llamamos a la funcion validaImagen que nos devuelve una promesa
-      try {
-        const respuesta = await validaImagen(imagen, titulo);
-        nombreArchivo = respuesta[0];
-        rutaArchivo = respuesta[1];
-      }catch (err){
-        errores.push(err);
-      }
+    //Llamamos a la funcion validaImagen que nos devuelve una promesa
+    try {
+      const respuesta = await validaImagen(imagen, titulo);
+      nombreArchivo = respuesta[0];
+      rutaArchivo = respuesta[1];
+    } catch (err) {
+      errores.push(err);
+    }
   } else {
     //Si no hemos actualizado el archivo, mantenemos los datos que hay en BBDD
     const old = await Punto.findById(id);
@@ -229,14 +265,14 @@ mapaCtrl.actualizarEnBBDD = async (req, res) => {
         rutaImagen: rutaArchivo
       }, function (err, resultado) {
         if (err) res.status(500).json({ message: error.message });
-        
+
         //Eliminamos la imagen antigua
         let ruta = oldImage.rutaImagen;
-        fs.unlink(ruta, function (errDevuelto, ok){
-          if(errDevuelto) console.log(errDevuelto);
+        fs.unlink(ruta, function (errDevuelto, ok) {
+          if (errDevuelto) console.log(errDevuelto);
           res.status(200).json({ message: 'ok' });
         })
-        
+
       })
   } else {  //En caso de existir errores, los devolvemos al cliente
     res.status(500).json({ message: errores });
