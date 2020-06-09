@@ -23,7 +23,7 @@ mapaCtrl.contacto = (req, res) => {
   res.render('contacto');
 }
 
-mapaCtrl.envioEmail = (req, res) => {
+mapaCtrl.envioEmail = async (req, res) => {
   //Procesamos el email de contacto
   const { nombre, email, mensaje } = req.body;  //Destructuramos los datos recibidos en el body
 
@@ -46,12 +46,8 @@ mapaCtrl.envioEmail = (req, res) => {
     text: mensaje     //Mensaje
   }
   //Creamos el envío y si existe algún error lo capturamos
-  transporter.sendMail(mailOptions, (error, res) => {
-    if(error){
-      res.status(500).send({error: error.message});
-    }
-  });
-  res.redirect('/');
+  const info = await transporter.sendMail(mailOptions);
+  res.render('./emailEnviado');
 }
 
 //Metodo que recupera todos los marcadores de la BBDD y si existe un filtro, solo los filtrados
@@ -250,7 +246,13 @@ mapaCtrl.actualizarEnBBDD = async (req, res) => {
     let coordenadas = [latitud, longitud];
     //Almacenamos la referencia a la antigua imagen
     const oldImage = await Punto.findById(id);
-
+      //Eliminamos la imagen antigua si ha cambiado
+      if(rutaArchivo != oldImage.rutaImagen){
+        let ruta = oldImage.rutaImagen;
+        fs.unlink(ruta, function (errDevuelto, ok) {
+          if (errDevuelto) console.log(errDevuelto);
+        })
+      }
     //Actualizamos la Ubicación con los nuevos datos
     const puntoActualizado = await Punto.findOneAndUpdate({ _id: id },
       {
@@ -265,16 +267,10 @@ mapaCtrl.actualizarEnBBDD = async (req, res) => {
         rutaImagen: rutaArchivo
       }, function (err, resultado) {
         if (err) res.status(500).json({ message: error.message });
-
-        //Eliminamos la imagen antigua
-        let ruta = oldImage.rutaImagen;
-        fs.unlink(ruta, function (errDevuelto, ok) {
-          if (errDevuelto) console.log(errDevuelto);
-          res.status(200).json({ message: 'ok' });
-        })
-
+        
+        res.status(200).json({ message: 'ok' });
       })
-  } else {  //En caso de existir errores, los devolvemos al cliente
+  }else {  //En caso de existir errores, los devolvemos al cliente
     res.status(500).json({ message: errores });
   }
 };
@@ -322,7 +318,8 @@ function validaImagen(imagen, titulo) {
       let archivoSubido = imagen;
       let ruta = 'src/storage/';
       let moment = Date.now();
-      nombreArchivo = moment + titulo + '.jpg';
+      titulo = titulo.replace(/[^a-zA-Z0-9]/g, '');
+      nombreArchivo = moment + '_' + titulo + '.jpg';
       rutaAbsoluta = ruta + nombreArchivo;
       archivoSubido.mv(rutaAbsoluta, function (err, file) {
         if (err) {

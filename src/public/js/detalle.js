@@ -92,6 +92,7 @@ if (document.getElementById("botUpdate")) {
         formData.append("acceso", document.getElementById("inputAcceso").value);
         formData.append("latitud", marcadorActivo.getLatLng().lat);
         formData.append("longitud", marcadorActivo.getLatLng().lng);
+        
         formData.append("imagen", document.getElementById('inputSubirImagen').files[0]);
         if(window.sessionStorage.getItem('Latitud') && window.sessionStorage.getItem('longitud')){
             formData.append("latitud", window.sessionStorage.getItem('Latitud'));
