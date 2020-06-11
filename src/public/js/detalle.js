@@ -1,4 +1,6 @@
 
+//---------Logica de la ventana de detalles-----------
+
 //Cargamos la vista inicial del mapa
 cargaMapaInicial();
 
@@ -232,6 +234,7 @@ document.getElementById('botExif').onclick = function () {
         })
     }
 };
+//Funcion para convertir los datos de velocidad de disparo a formato de segundos
 function calculaVelocidad(veloc) {
     if (!veloc) return 'Sin datos';  //Si no existe el dato, no continuamos y retornamos vacio
 

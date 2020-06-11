@@ -1,10 +1,13 @@
 
 //Creamos un objeto controlador
 const mapaCtrl = {};
+
+//Requerimos los modulos a utilizar
 const Punto = require('../models/Punto');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 
+//Variables globales
 let usuarioActual = "";
 let errores = [];
 
@@ -19,19 +22,22 @@ mapaCtrl.renderMapa = (req, res) => {
   res.render('mapas/mapa');
 };
 
+//Funcion para renderizar la vista del formulario de contacto
 mapaCtrl.contacto = (req, res) => {
   res.render('contacto');
 }
 
+//Función que procesa los datos enviados por el formulario de contacto
+//y envia el correo al administrador
 mapaCtrl.envioEmail = async (req, res) => {
-  //Procesamos el email de contacto
-  const { nombre, email, mensaje } = req.body;  //Destructuramos los datos recibidos en el body
+  //Destructuramos los datos recibidos en el body
+  const { nombre, email, mensaje } = req.body;  
 
-  //Creamos un falso envío de correo
+  //Creamos un falso envío de correo a traves de un servidor
+  //de correo ficticio para desarrollo https://ethereal.email/
   const transporter = nodemailer.createTransport({
 
-    //Utilizamos un servidor de correo ficticio para pruebas
-    //Una vez puesto en producción utilizaremos una cuenta real
+    //Una vez puesto en producción utilizaremos las credenciales de una cuenta real
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
@@ -45,7 +51,7 @@ mapaCtrl.envioEmail = async (req, res) => {
     subject: email,   //email del remitente
     text: mensaje     //Mensaje
   }
-  //Creamos el envío y si existe algún error lo capturamos
+  //Creamos el envío y renderizamos la vista de correo enviado
   const info = await transporter.sendMail(mailOptions);
   res.render('./emailEnviado');
 }
@@ -76,12 +82,10 @@ mapaCtrl.misUbicaciones = (req, res) => {
   });
 };
 
-//Nueva ubicación BBDD
+//Renderiza la vista de detalle para Nueva ubicación
 mapaCtrl.renderNuevo = (req, res) => {
   res.render('mapas/nuevo');
 };
-
-
 
 //Validadión y guardado de datos de nuevo suministro
 mapaCtrl.upload = async (req, res) => {
@@ -162,7 +166,6 @@ mapaCtrl.upload = async (req, res) => {
 };
 
 
-
 //Obtenemos la imagen guardada en la carpeta de imagenes y con el nombre recibido por parametros
 mapaCtrl.getImage = (req, res) => {
   let img = req.params.name;
@@ -170,18 +173,21 @@ mapaCtrl.getImage = (req, res) => {
 };
 
 //Renderizamos la vista para ver el detalle de una ubicación
+//Pasamos por parametros un objeto con el modo de edición y el id de la ubicación
 mapaCtrl.verDetalle = (req, res) => {
   let id = req.params.id;
   res.render('mapas/detalle', { normal: true, id });
 };
 
-//Renderizamos la vista para editar de una ubicación
+//Renderizamos la vista para editar en el detalle de una ubicación
+//Pasamos por parametros un objeto con el modo de edición y el id de la ubicación
 mapaCtrl.editarUbicacion = (req, res) => {
   let id = req.params.id;
   res.render('mapas/detalle', { edit: true, id });
 };
 
-//Renderizamos la vista para eliminar de una ubicación
+//Renderizamos la vista para eliminar en el detalle de una ubicación
+//Pasamos por parametros un objeto con el modo de edición y el id de la ubicación
 mapaCtrl.eliminarUbicacion = (req, res) => {
   let id = req.params.id;
   res.render('mapas/detalle', { delete: true, id });
@@ -194,7 +200,7 @@ mapaCtrl.actualizarEnBBDD = async (req, res) => {
   let nombreArchivo;
   let rutaArchivo;
 
-  //Definimos las variables del objeto
+  //Definimos las variables del objeto recibidos en el body de la petición
   const {
     titulo,
     tipo_fotografia,
@@ -209,6 +215,7 @@ mapaCtrl.actualizarEnBBDD = async (req, res) => {
   if (req.files) {
     imagen = req.files.imagen;
     //Llamamos a la funcion validaImagen que nos devuelve una promesa
+    //con la ruta y el nombre del archivo guardado en BBDD
     try {
       const respuesta = await validaImagen(imagen, titulo);
       nombreArchivo = respuesta[0];
@@ -279,7 +286,6 @@ mapaCtrl.eliminarEnBBDD = (req, res) => {
   let id = req.params.id;
   Punto.findOneAndDelete({ _id: id }, function (err, resultado) {
     if (err) return console.error(err);
-
     //Eliminamos del servidor la imagen asociada a la ubicación
     //recuperando la ruta de la imagen
     let ruta = resultado.rutaImagen;
@@ -290,7 +296,6 @@ mapaCtrl.eliminarEnBBDD = (req, res) => {
   });
 };
 
-
 //Recupera de la BBDD todos los datos del elemento identificado por su _id
 mapaCtrl.datosDetalle = (req, res) => {
   let id = req.params.id;
@@ -300,7 +305,7 @@ mapaCtrl.datosDetalle = (req, res) => {
   })
 };
 
-//Validación y guardado de imagen
+//Validación y guardado de imagen, se le pasa por parametros la imagen recibida y el titulo
 function validaImagen(imagen, titulo) {
   let rutaAbsoluta; //Nombre final de la imagen que guardaremos en storage
   let nombreArchivo;
@@ -317,6 +322,8 @@ function validaImagen(imagen, titulo) {
     else {
       let archivoSubido = imagen;
       let ruta = 'src/storage/';
+      //Para que no se dupliquen los nombres de archivo, utilizamos como nombre la fecha actual
+      //en milisegundos desde el 01/01/1970
       let moment = Date.now();
       titulo = titulo.replace(/[^a-zA-Z0-9]/g, '');
       nombreArchivo = moment + '_' + titulo + '.jpg';

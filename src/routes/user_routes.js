@@ -1,18 +1,17 @@
+//Creamos el objeto Router y añadimos el modulo express
 const {Router} = require('express');
 const router = Router();
 
 //Importamos los metodos creados
 const { renderSignUpForm, renderSigninForm, signin, signup, logout } = require('../controllers/user.controlers');
 
-//Creamos las rutas
-
-//Recogida de datos por get o post
+//Endpoint para recogida de datos de usuario
 router.get('/users/signup', renderSignUpForm);
 
-//Envío de datos al servidor
+//Envío de datos del usuario al servidor
 router.post('/users/signup', signup);
 
-//Envio de datos del formulario
+//Envio de datos del formulario de registro
 router.get('/users/signin', renderSigninForm);
 
 //Envio al servidor

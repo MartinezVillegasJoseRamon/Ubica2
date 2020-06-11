@@ -1,4 +1,6 @@
 
+//---------Logica de la ventana de nueva ubicación-----------
+
 //Metodo para evitar el reenvío del formulario
 if (window.history.replaceState) {
     window.history.replaceState(null, null, window.location.href);
@@ -23,7 +25,8 @@ cargaDatos('/mapas/misUbicaciones');
 
 //Añadimos un marcador temporal al hacer doble click
 map.doubleClickZoom.disable();  //Desactivamos el doble click para hacer zoom
-let temp = L.markerClusterGroup({ disableClusteringAtZoom: 10 });   //Capa para el marcador nuevo
+//Capa para el marcador nuevo
+let temp = L.markerClusterGroup({ disableClusteringAtZoom: 10 });   
 
 map.on('dblclick', e => {
     //Si existe un marcador temporal anterior, lo eliminamos
@@ -76,8 +79,6 @@ document.getElementById('botSalir').onclick = function () {
             window.location.href = "/mapas/mapa";
         }
       });
-
-    
 };
 
 
@@ -115,7 +116,7 @@ function uploadData() {
         })
 };
 
-// //Añadimos los datos exif
+//Mostramos los datos exif
 document.getElementById('botExif').onclick = function () {
 
     let img1 = document.getElementById("imagenThumbnail");  //Capturamos la imagen subida

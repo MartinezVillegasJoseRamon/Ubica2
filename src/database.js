@@ -1,3 +1,5 @@
+
+//Requerimos el modulo mongoose para acceso a la BBDD de Mongo
 const mongoose = require('mongoose');
 
 //Creamos la cadena de conexión como un string que toma los datos del archivo .env

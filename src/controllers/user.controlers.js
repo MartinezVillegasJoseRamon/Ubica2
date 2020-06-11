@@ -1,5 +1,7 @@
-//Importamos los objetos que vamos a necesitar
+//Creamos los objetos que vamos a necesitar
 const userCtrl = {};
+
+//Requerimos los modulos usados
 const User = require('../models/User');
 const passport = require('passport');
 

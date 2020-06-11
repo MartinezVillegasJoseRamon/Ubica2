@@ -81,7 +81,7 @@ app.use((req, res, next) => {
     next();
 });
 
-//---------------- Rutas
+//---------------- Rutas ------------------------
 
 //Requerimos el archivo donde almacenamos las rutas
 app.use(require('./routes/index_routes'));
@@ -89,7 +89,6 @@ app.use(require('./routes/user_routes'));
 app.use(require('./routes/mapa_routes'));
 
 //---------------- Ficheros estaticos
-
 //Indicación de la ruta de la carpeta public
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.static('public'));

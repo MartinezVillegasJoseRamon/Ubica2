@@ -8,8 +8,9 @@ let arrayMarkers = [];    //Array para marcadores
 let miPosicion;
 let autorNuevaUbicacion;
 
+//Inicialización del mapa
 function cargaMapaInicial() {
-    //Inicialización del mapa
+
     map = L.map('map', { center: [37.992225, -1.130542], zoom: 15 });
     var markers = new L.LayerGroup().addTo(map);
     //Capas de base
@@ -244,10 +245,8 @@ function markerClick(e, elem, photo) {
     window.sessionStorage.setItem('idUbicacion', idUbicacion);
     window.sessionStorage.setItem('latitud', latitud);
     window.sessionStorage.setItem('longitud', longitud);
-
+    //Capturamos el modo en el que nos encontramos actualmente
     let modo = window.sessionStorage.getItem('modo');
-
-
     //Creamos un div con la cabecera del popup
     let container = L.DomUtil.create('div');
 
@@ -285,18 +284,14 @@ function markerClick(e, elem, photo) {
         });
     }
 
-
-
     //Configuración del popup
     choicePopUp
         .setLatLng(e.latlng)
         .setContent(container)
         .openOn(map);
-
-
 };
 
-//Definimos el botón del popup
+//Definimos el tipo de botón del popup
 function createButton(label, container, tipo) {
     var btn = L.DomUtil.create('button', tipo, container);
     btn.setAttribute('type', 'button');

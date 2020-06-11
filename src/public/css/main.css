@@ -1,13 +1,17 @@
+/* Definimos las características de objetos personalizados */
+
 body{
     background-color: #1488cc;
 }
+/* Mapas */
 #map{
     height: 85vh;
 }
-
+/* Imagen del logotipo */
 .logo{
     height: 3vw;
 }
+/* Formulario de contacto */
 .contact-form{
     background:rgba(0,0,0, .5);
     color:white;
