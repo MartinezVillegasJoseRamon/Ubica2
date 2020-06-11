@@ -22,7 +22,7 @@ document.getElementById("ver_todas").onclick = function () {
 //Evento para boton mi ubicación
 document.getElementById("ver_miUbicacion").onclick = function () {
     document.getElementById("tipo_foto").value='Tipo de foto';
-    map.flyTo([miPosicion.latitude, miPosicion.longitude], 16);
+    map.flyTo([miPosicion.latitude, miPosicion.longitude], 14);
 };
 
 //Evento para boton Mis ubicaciones
