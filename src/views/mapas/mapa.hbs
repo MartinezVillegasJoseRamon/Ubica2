@@ -1,4 +1,5 @@
-<div class="row p-1">
+
+<div class="row">
     <div class="container-fluid col-md-10" id="map">
         {{!-- Aqui se carga el contenido del mapa a mostrar --}}
     </div>
@@ -8,10 +9,10 @@
                 Navegación
             </div>
             <div class="card-body">
-                <button type="button" id="ver_todas" class="btn btn-success btn-block"><i class='fa fa-users'></i>&nbsp;Ver todo</button>
-                <button type="button" id="mis_ubicaciones" class="btn btn-success btn-block"><i class='fa fa-user-o'></i>&nbsp;Ver mis
+                <button type="button" id="ver_todas" class="btn btn-success btn-block"><i class='fa fa-users'></i>Ver todo</button>
+                <button type="button" id="mis_ubicaciones" class="btn btn-success btn-block"><i class='fa fa-user-o'></i>Mis
                     Ubicaciones</button>
-                <button type="button" id="ver_miUbicacion" class="btn btn-success btn-block"><i class='fa fa-thumb-tack'></i>&nbsp;Ver mi ubicación</button>
+                <button type="button" id="ver_miUbicacion" class="btn btn-success btn-block"><i class='fa fa-thumb-tack'></i>Mi ubicación</button>
                 <span id="txtModo" class="badge badge-pill badge-primary d-block mt-3">Modo visualización</span>
             </div>
         </div>
@@ -50,7 +51,6 @@
         </div>
     </div>
 </div>
-
 {{!-- Script para crear mapa --}}
 <script src="/js/vistaMapa.js"></script>
 

@@ -4,20 +4,19 @@ let map;
 //Añadimos variables para manejo de marcadores
 let marcadores = L.markerClusterGroup({ disableClusteringAtZoom: 17 });  //Capa marcadores
 let arrayMarkers = [];    //Array para marcadores
-
 let miPosicion;
 let autorNuevaUbicacion;
 
 //Inicialización del mapa
 function cargaMapaInicial() {
 
-    map = L.map('map', { center: [37.992225, -1.130542], zoom: 15 });
+    map = L.map('map', { center: [37.992225, -1.130542], zoom: 15});
     var markers = new L.LayerGroup().addTo(map);
     //Capas de base
     //Cartografia
-    var osmBase = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    var osmBase = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap<\/a> contributors',
-        maxZoom: 20,
+        maxZoom: 19,
         maxNativeZoom: 19
     }).addTo(map);
 
@@ -31,11 +30,33 @@ function cargaMapaInicial() {
         maxZoom: 20,
         maxNativeZoom: 19
     });
+    //Topografico
+    var OpenTopoMap = L.tileLayer('http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+	maxZoom: 17,
+	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+    });
 
     var baseMaps = {
         "Cartografia": osmBase,
-        "Ortofotos": pnoa
+        "Ortofotos": pnoa,
+        "Topografico": OpenTopoMap
     };
+
+    //Buscador de localizaciones
+    map.addControl( new L.Control.Search({
+        url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+        jsonpParam: 'json_callback',
+        propertyName: 'display_name',
+        propertyLoc: ['lat','lon'],
+        marker: L.circleMarker([0,0],{radius:30}),
+        autoCollapse: true,
+        autoType: false,
+        minLength: 2,
+        textPlaceholder: 'Buscar...',
+        textErr: 'Ubicación no encontrada!!',
+        zoom:12
+    }) );
+  
     //Añadimos las capas base al mapa
     L.control.layers(baseMaps).addTo(map);
 };
