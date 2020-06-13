@@ -55,7 +55,7 @@ document.getElementById("edit").onclick = function () {
     Swal.fire({
         title: 'Editar',
         icon: 'info',
-        text: 'Solo puedes editar tus ubicaciones',
+        text: 'Solo puedes editar tus ubicaciones. Pulsa Ver todo para salir del modo Edición',
         confirmButtonText: 'Ok',
     })
 };
@@ -71,7 +71,7 @@ document.getElementById("delete").onclick = function () {
     Swal.fire({
         title: 'Eliminar',
         icon: 'warning',
-        text: 'Solo puedes eliminar tus ubicaciones',
+        text: 'Solo puedes eliminar tus ubicaciones. Pulsa Ver todo para salir del modo Eliminación',
         confirmButtonText: 'Ok',
     })
 };
