@@ -43,7 +43,7 @@ function cargaMapaInicial() {
     };
 
     //Buscador de localizaciones
-    map.addControl( new L.Control.Search({
+    let buscador = map.addControl( new L.Control.Search({
         url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
         jsonpParam: 'json_callback',
         propertyName: 'display_name',
@@ -53,9 +53,10 @@ function cargaMapaInicial() {
         autoType: false,
         minLength: 2,
         textPlaceholder: 'Buscar...',
-        textErr: 'Ubicación no encontrada!!',
+        textErr: 'Error:Ubicación no encontrada!!',
         zoom:12
     }) );
+
   
     //Añadimos las capas base al mapa
     L.control.layers(baseMaps).addTo(map);

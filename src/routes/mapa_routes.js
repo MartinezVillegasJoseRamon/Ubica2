@@ -61,10 +61,10 @@ router.get('/mapas/detalle/:id/ubicacion', isAuthenticated, datosDetalle);
 
 //---------------------FORMULARIO DE CONTACTO--------------
 //Endpoint para renderizar formulario de contacto
-router.get('/mapas/contacto', isAuthenticated, contacto);
+router.get('/mapas/contacto', contacto);
 
 //Endpoint para procesar los datos enviados en el formulario de contacto
-router.post('/mapas/contacto/email', isAuthenticated, envioEmail);
+router.post('/mapas/contacto/email', envioEmail);
 
 
 
