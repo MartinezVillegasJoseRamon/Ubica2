@@ -45,8 +45,6 @@ function descargaDatos(url) {
                     document.getElementById("labelInputSubirImagen").innerText = res[0].imagen;
                 }
                 
-
-
                 //Dibujamos el marcador en las coordenadas del punto actual
                 let lat = res[0].coordenadas[0];
                 let long = res[0].coordenadas[1];
